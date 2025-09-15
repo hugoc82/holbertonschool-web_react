@@ -4,7 +4,7 @@
   "description": "Webpack with CSS and Images",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production"
+    "build": "webpack"
   },
   "dependencies": {
     "jquery": "^3.7.1",
