@@ -41,7 +41,7 @@
     },
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest",
-      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/fileTransformer.cjs"
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/fileTransformer.js"
     },
     "setupFilesAfterEnv": [
       "<rootDir>/setupTests.js"
