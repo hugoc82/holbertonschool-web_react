@@ -1,4 +1,4 @@
-import React from "react"; // ✅ ajouté
+import React from "react";
 import './App.css';
 import logo from './assets/holberton-logo.jpg';
 
