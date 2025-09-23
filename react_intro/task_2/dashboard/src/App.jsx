@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
 import logo from "./assets/holberton-logo.jpg";
-import Notifications from "./Notifications";
 import { getCurrentYear, getFooterCopy } from "./utils";
+import Notifications from "./Notifications";
 
 function App() {
   return (
@@ -19,25 +19,14 @@ function App() {
       <div className="App-body">
         <p>Login to access the full dashboard</p>
 
-        {/* Formulaire task_2 */}
-        <div className="login-form" role="form" aria-label="Login form">
-          <div className="form-row">
-            <label htmlFor="email">Email:</label>
-            <input id="email" name="email" type="email" autoComplete="email" />
-          </div>
+        {/* >>> Pas de wrapper, éléments à plat sous le paragraphe <<< */}
+        <label htmlFor="email">Email:</label>
+        <input id="email" type="email" />
 
-          <div className="form-row">
-            <label htmlFor="password">Password:</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-            />
-          </div>
+        <label htmlFor="password">Password:</label>
+        <input id="password" type="password" />
 
-          <button type="button">OK</button>
-        </div>
+        <button type="button">OK</button>
       </div>
 
       <div className="App-footer">
@@ -48,4 +37,5 @@ function App() {
     </>
   );
 }
+
 export default App;
