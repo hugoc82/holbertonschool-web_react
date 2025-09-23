@@ -19,12 +19,12 @@ function App() {
       <div className="App-body">
         <p>Login to access the full dashboard</p>
 
-        {/* >>> Pas de wrapper, éléments à plat sous le paragraphe <<< */}
-        <label htmlFor="email">Email:</label>
-        <input id="email" type="email" />
+        {/* éléments à plat, sans wrapper, dans cet ordre précis */}
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" />
 
-        <label htmlFor="password">Password:</label>
-        <input id="password" type="password" />
+        <label htmlFor="password">Password</label>
+        <input id="password" name="password" type="password" />
 
         <button type="button">OK</button>
       </div>
