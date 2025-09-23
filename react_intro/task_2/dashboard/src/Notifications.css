@@ -14,10 +14,15 @@
   font-weight: 500;
 }
 
-.notification-items ul {
-  margin: 0.5rem 0 0 1.25rem;
-  padding: 0;
+.notification-items {
+  position: relative; /* nécessaire pour le bouton en absolute */
+  border: 2px dashed #e1003c;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  background: #fff;
+  max-width: 520px;
 }
+
 
 .notification-items li {
   margin: 0.25rem 0;
