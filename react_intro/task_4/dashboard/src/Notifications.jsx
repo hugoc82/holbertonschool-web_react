@@ -1,7 +1,7 @@
 import React from "react";
 import "./Notifications.css";
 import { getLatestNotification } from "./utils";
-import closeIcon from "./assets/close-button.png";
+import closeIcon from "./assets/close-icon.png"; // <- important
 
 function Notifications() {
   const handleClose = () => {
@@ -10,7 +10,6 @@ function Notifications() {
 
   return (
     <div className="notification-items">
-      {/* Bouton à droite (style inline exigé) */}
       <button
         type="button"
         aria-label="Close"
@@ -29,10 +28,8 @@ function Notifications() {
         <img src={closeIcon} alt="close" style={{ width: "12px", height: "12px" }} />
       </button>
 
-      {/* Titre */}
       <p>Here is the list of notifications</p>
 
-      {/* 3 items EXACTS */}
       <ul>
         <li data-priority="default">New course available</li>
         <li data-priority="urgent">New resume available</li>
