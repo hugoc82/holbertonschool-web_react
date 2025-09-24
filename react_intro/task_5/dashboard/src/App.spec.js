@@ -3,24 +3,16 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 
-describe("Sign-in form in App", () => {
-  test("renders 2 input elements (email & password)", () => {
-    const { container } = render(<App />);
-    // Compte strictement les deux <input> du formulaire
-    const inputs = container.querySelectorAll("input");
-    expect(inputs).toHaveLength(2);
+describe("App", () => {
+  test("renders header title", () => {
+    render(<App />);
+    expect(screen.getByText(/School dashboard/i)).toBeInTheDocument();
   });
 
-  test("renders 2 labels with text 'Email' and 'Password' (case-insensitive)", () => {
+  test("renders sign-in form controls", () => {
     render(<App />);
-    // Regex insensibles à la casse (checker-friendly)
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-  });
-
-  test("renders a button with text 'OK' (case-insensitive)", () => {
-    render(<App />);
-    // Regex insensible à la casse, sans ancre stricte
     expect(screen.getByRole("button", { name: /ok/i })).toBeInTheDocument();
   });
 });

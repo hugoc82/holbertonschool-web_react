@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
-import logo from "./assets/holberton-logo.jpg"; // <-- important: l'import explicite
-import { getCurrentYear, getFooterCopy } from "./utils";
-import Notifications from "./Notifications";
+import logo from "../assets/holberton-logo.jpg";
+import { getCurrentYear, getFooterCopy } from "../utils/utils";
+import Notifications from "../Notifications/Notifications";
 
 function App() {
   return (
