@@ -1,7 +1,7 @@
 import React from "react";
 import "./Notifications.css";
 import { getLatestNotification } from "./utils";
-import closeIcon from "./assets/close-icon.png"; // <- important
+import closeIcon from "./assets/close-button.png"; // <-- utiliser le nom "close-button.png"
 
 function Notifications() {
   const handleClose = () => {
