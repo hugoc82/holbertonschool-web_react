@@ -1,8 +1,7 @@
-// task_2/dashboard/src/Notifications.jsx
 import React from "react";
 import "./Notifications.css";
 import { getLatestNotification } from "./utils";
-import closeIcon from "./assets/close-button.png"; // garde ce nom si c'est celui présent chez toi
+import closeIcon from "./assets/close-button.png";
 
 function Notifications() {
   const handleClose = () => {
@@ -11,7 +10,7 @@ function Notifications() {
 
   return (
     <div className="notification-items">
-      {/* Bouton à droite, style inline (exigé) */}
+      {/* Bouton à droite (style inline exigé) */}
       <button
         type="button"
         aria-label="Close"
@@ -40,7 +39,7 @@ function Notifications() {
         <li
           data-priority="urgent"
           dangerouslySetInnerHTML={{ __html: getLatestNotification() }}
-        ></li> {/* <-- pas auto-fermant */}
+        ></li>
       </ul>
     </div>
   );
