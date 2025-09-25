@@ -1,39 +1,43 @@
-﻿import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+﻿import path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
 const __dirname = path.resolve();
 
 export default {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    filename: 'bundle.[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "bundle.[contenthash].js",
+    path: path.resolve(__dirname, "dist"),
     clean: true,
-    publicPath: '/',
+    publicPath: "/",
   },
   module: {
     rules: [
       {
         test: /\.jsx?$/i,
         exclude: /node_modules/,
-        use: { loader: 'babel-loader' },
+        use: { loader: "babel-loader" },
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: "asset/resource"
       }
     ],
   },
-  resolve: { extensions: ['.js', '.jsx'] },
+  resolve: { extensions: [".js", ".jsx"] },
   devServer: {
-    static: path.resolve(__dirname, 'dist'),
+    static: path.resolve(__dirname, "dist"),
     port: 5173,
     historyApiFallback: true,
     open: true
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: "./src/index.html",
       favicon: false,
     }),
   ],
