@@ -1,0 +1,14 @@
+﻿.login {
+  padding: 24px 16px;
+}
+.login-form {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 12px;
+  align-items: center;
+  max-width: 420px;
+}
+.login-form button {
+  grid-column: 1 / -1;
+  padding: 8px 12px;
+}
