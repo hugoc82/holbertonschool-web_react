@@ -1,5 +1,4 @@
-﻿@'
-import React, { Fragment } from "react";
+﻿import React, { Fragment } from "react";
 
 import Notifications from "../Notifications/Notifications";
 import Header from "../Header/Header";
@@ -16,4 +15,3 @@ export default function App() {
     </Fragment>
   );
 }
-'@ | Set-Content -Encoding UTF8 .\src\App\App.jsx
