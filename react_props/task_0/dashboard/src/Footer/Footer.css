@@ -1,6 +1,11 @@
-﻿.app-footer {
-  padding: 16px;
-  border-top: 3px solid #e0354b;
+.App-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.App-footer p {
   text-align: center;
-  font-size: 0.9rem;
+  border-top: 3px solid var(--holberton-red);
+  padding: 16px 0;
 }
