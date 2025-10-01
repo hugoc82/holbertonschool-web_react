@@ -1,15 +1,21 @@
 ﻿import React from "react";
 
-export default function NotificationItem({ type = "default", html, value }) {
+export default function NotificationItem({ type, value, html }) {
   const color = type === "urgent" ? "red" : "blue";
-  const commonProps = {
-    "data-notification-type": type,
-    style: { color }
-  };
 
-  // Si html est fourni, on l'affiche; sinon on affiche value
   if (html) {
-    return <li {...commonProps} dangerouslySetInnerHTML={html} />;
+    return (
+      <li
+        data-notification-type={type}
+        style={{ color }}
+        dangerouslySetInnerHTML={html}
+      />
+    );
   }
-  return <li {...commonProps}>{value}</li>;
+
+  return (
+    <li data-notification-type={type} style={{ color }}>
+      {value}
+    </li>
+  );
 }
