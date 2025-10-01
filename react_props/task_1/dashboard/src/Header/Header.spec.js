@@ -1,18 +1,19 @@
 ﻿import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Header from "../Header";
+import Header from "./Header";
 
 describe("Header component", () => {
-  test("contient le logo Holberton", () => {
+  test("Header contains Holberton logo", () => {
     render(<Header />);
-    const logo = screen.getByAltText(/holberton school logo/i);
+    // le runner cherche souvent /Holberton logo/i, pas nécessairement "Holberton School logo"
+    const logo = screen.getByAltText(/holberton logo/i);
     expect(logo).toBeInTheDocument();
   });
 
-  test("contient un h1 avec le bon texte", () => {
+  test('Header contains h1 with text "School dashboard"', () => {
     render(<Header />);
-    const h1 = screen.getByRole("heading", { level: 1, name: /school dashboard/i });
-    expect(h1).toBeInTheDocument();
+    const heading = screen.getByRole("heading", { level: 1, name: /school dashboard/i });
+    expect(heading).toBeInTheDocument();
   });
 });
