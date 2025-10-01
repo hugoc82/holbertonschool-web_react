@@ -1,21 +1,22 @@
-import { getFooterCopy, getFullYear, getLatestNotification } from "./utils";
+import { render, screen } from "@testing-library/react";
+import {
+  getCurrentYear,
+  getFooterCopy,
+  getLatestNotification,
+} from "./utils.js";
 
-describe("Utils functions", () => {
-  test("getFullYear returns the correct year", () => {
-    expect(getFullYear()).toEqual(2021);
-  });
+test("Verify that the function getCurrentYear returns the correct year", () => {
+  expect(getCurrentYear()).toBe(new Date().getFullYear());
+});
 
-  test("getFooterCopy returns the correct string when the argument is true", () => {
-    expect(getFooterCopy(true)).toEqual("Holberton School");
-  });
+test("Verify that getFooterCopy returns the correct string when the argument is true or false", () => {
+  expect(getFooterCopy(true)).toBe("Holberton School");
 
-  test("getFooterCopy returns the correct string when the argument is false", () => {
-    expect(getFooterCopy(false)).toEqual("Holberton School main dashboard");
-  });
+  expect(getFooterCopy(false)).toBe("Holberton School main dashboard");
+});
 
-  test("getLatestNotification returns the expected string", () => {
-    expect(getLatestNotification()).toEqual(
-      "<strong>Urgent requirement</strong> - complete by EOD"
-    );
-  });
+test("Verify the returned string form getLatestNotification", () => {
+  expect(getLatestNotification()).toBe(
+    "<strong>Urgent requirement</strong> - complete by EOD"
+  );
 });
