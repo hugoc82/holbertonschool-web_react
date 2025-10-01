@@ -1,0 +1,21 @@
+﻿:root { --holberton-red: #e1484c; }
+
+.App {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.login p {
+  margin-bottom: 8px;
+}
+
+.login label {
+  margin-right: 8px;
+}
+.login input {
+  margin-right: 8px;
+}
+
+.state-logged .login { display: none; }
+.state-logged .CourseList { display: block; }
