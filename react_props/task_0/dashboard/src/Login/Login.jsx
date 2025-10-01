@@ -1,16 +1,19 @@
-﻿import React from "react";
+﻿import './Login.css'
+import holbertonLogo from '../assets/holberton-logo.jpg'
 
-export default function Login() {
+function Login() {
   return (
-    <main className="login">
+    <div className="Login">
       <p>Login to access the full dashboard</p>
-      <form className="login-form" onSubmit={(e) => e.preventDefault()}>
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" />
-        <label htmlFor="password">Password</label>
-        <input id="password" name="password" type="password" />
-        <button type="submit">OK</button>
-      </form>
-    </main>
-  );
+      <label id="email">Email: 
+        <input placeholder='email'></input>
+      </label>
+      <label id="password">Password: 
+        <input placeholder='password'></input>
+      </label>
+      <button>OK</button>
+    </div>
+  )
 }
+
+export default Login
