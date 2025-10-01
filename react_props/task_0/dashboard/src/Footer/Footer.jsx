@@ -1,9 +1,12 @@
-﻿import { render, screen } from '@testing-library/react'
-import Footer from './Footer.jsx'
+﻿import './Footer.css'
+import { getCurrentYear, getFooterCopy } from '../utils/utils.js'
 
-test('Verify if the content of the paragraph is correct', () => {
-  render(<Footer />)
-  expect(
-    screen.getByText(/copyright.*holberton.*school/i)
-  ).toBeInTheDocument()
-})
+function Footer() {
+  return (
+    <div className="Footer">
+      <p>Copyright { getCurrentYear() } - { getFooterCopy(true) }</p>
+    </div>
+  )
+}
+
+export default Footer
