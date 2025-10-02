@@ -1,5 +1,4 @@
-﻿import React from "react";
-import { Fragment } from 'react'
+﻿import { Fragment } from 'react'
 import './App.css'
 import Notifications from '../Notifications/Notifications.jsx'
 import Header from '../Header/Header.jsx'
