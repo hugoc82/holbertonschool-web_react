@@ -1,14 +1,13 @@
-﻿import { render, screen } from "@testing-library/react";
-import Header from "./Header.jsx";
+﻿import React from "react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Footer from "../Footer";
 
-test("Verify if h1 contains School dashboard", () => {
-  render(<Header />);
-  expect(
-    screen.getByRole("heading", { level: 1, name: /school dashboard/i })
-  ).toBeInTheDocument();
-});
-
-test("Verify if the image element is rendered", () => {
-  render(<Header />);
-  expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument();
+describe("Footer component", () => {
+  test("rend Copyright {année} - Holberton School quand isIndex=true", () => {
+    render(<Footer />);
+    const year = new Date().getFullYear();
+    const re = new RegExp(`Copyright\\s+${year}\\s+-\\s+Holberton School`, "i");
+    expect(screen.getByText(re)).toBeInTheDocument();
+  });
 });

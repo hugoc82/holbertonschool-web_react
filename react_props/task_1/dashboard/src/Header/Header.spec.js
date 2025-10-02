@@ -1,28 +1,14 @@
-﻿import React from "react";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Header from "./Header";
-// Variante que certains runners cherchent (même si non utilisée):
-// import Header from "../Header/Header";
+﻿import { render, screen } from "@testing-library/react";
+import Header from "./Header.jsx";
 
-describe("Header component", () => {
-  // Énoncé: "Check whether the Header component contains the Holberton logo."
-  it("Check whether the Header component contains the Holberton logo.", () => {
-    render(<Header />);
-    const logo = screen.getByAltText(/Holberton School logo/i);
-    expect(logo).toBeInTheDocument();
+test("Verify if h1 contains School dashboard", () => {
+  render(<Header />);
+  expect(
+    screen.getByRole("heading", { level: 1, name: /school dashboard/i })
+  ).toBeInTheDocument();
+});
 
-    // Variante recherchée par d'autres runners (laisser en commentaire pour ne pas casser le test):
-    // screen.getByAltText(/Holberton logo/i);
-  });
-
-  // Énoncé: "Check whether the Header component contains the heading h1 element with the correct text."
-  it("Check whether the Header component contains the heading h1 element with the correct text.", () => {
-    render(<Header />);
-    const heading = screen.getByRole("heading", {
-      level: 1,
-      name: /School dashboard/i,
-    });
-    expect(heading).toBeInTheDocument();
-  });
+test("Verify if the image element is rendered", () => {
+  render(<Header />);
+  expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument();
 });
