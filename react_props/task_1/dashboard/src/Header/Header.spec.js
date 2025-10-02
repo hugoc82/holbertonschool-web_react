@@ -1,4 +1,4 @@
-﻿import { render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Header from "./Header.jsx";
 
 test("Verify if h1 contains School dashboard", () => {

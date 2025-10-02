@@ -1,4 +1,4 @@
-﻿import { render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Footer from "./Footer.jsx";
 
 test("Verify if the content of the paragraph is correct", () => {
