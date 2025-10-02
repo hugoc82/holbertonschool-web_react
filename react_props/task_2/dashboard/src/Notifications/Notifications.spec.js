@@ -1,24 +1,30 @@
-﻿import React from "react";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Notifications from "./Notifications";
+import { render, screen, fireEvent } from "@testing-library/react";
+import Notifications from "./Notifications.jsx";
 
-const sample = [
-  { id: 1, type: "default", value: "New course available" },
-  { id: 2, type: "urgent", value: "New resume available" },
-  { id: 3, type: "urgent", html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" } },
-];
+test("Verify the existence of the notifications title Here is the list of notifications", () => {
+  render(<Notifications />);
+  expect(
+    screen.getByText(/here is the list of notifications/i)
+  ).toBeInTheDocument();
+});
 
-describe("Notifications", () => {
-  test("affiche 3 items avec le bon texte", () => {
-    render(<Notifications notifications={sample} />);
-    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+test("Verify the existence of the button element in the notifications", () => {
+  render(<Notifications />);
+  expect(screen.getByRole("button")).toBeInTheDocument();
+});
 
-    expect(screen.getByText(/new course available/i)).toBeInTheDocument();
-    expect(screen.getByText(/new resume available/i)).toBeInTheDocument();
-    // L'item HTML
-    expect(
-      screen.getByText(/Urgent requirement/i).closest("li")
-    ).toHaveAttribute("data-notification-type", "urgent");
-  });
+test("Verify there are 3 li elements as notifications rendered", () => {
+  render(<Notifications />);
+  const listItems = screen.getAllByRole("listitem");
+  expect(listItems).toHaveLength(3);
+});
+
+test("Verify whether clicking the close button logs Close button has been clicked to the console", () => {
+  const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+  render(<Notifications />);
+  const closeButton = screen.getByRole("button");
+  fireEvent.click(closeButton);
+
+  expect(consoleSpy).toHaveBeenCalledWith("Close button has been clicked");
+  consoleSpy.mockRestore();
 });

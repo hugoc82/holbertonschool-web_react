@@ -1,21 +1,20 @@
-﻿import React from "react";
-
-export default function NotificationItem({ type, value, html }) {
-  const color = type === "urgent" ? "red" : "blue";
-
+export default function NotificationItem({ type = "default", html, value }) {
+  const style = { color: type === "urgent" ? "red" : "blue" };
+  if (value) {
+    return (
+      <li data-notification-type={type} style={style}>
+        {value}
+      </li>
+    );
+  }
   if (html) {
     return (
       <li
         data-notification-type={type}
-        style={{ color }}
+        style={style}
         dangerouslySetInnerHTML={html}
       />
     );
   }
-
-  return (
-    <li data-notification-type={type} style={{ color }}>
-      {value}
-    </li>
-  );
+  return null;
 }
