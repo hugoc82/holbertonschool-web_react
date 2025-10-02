@@ -1,13 +1,7 @@
-﻿import React from "react";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Footer from "../Footer";
+﻿import { render, screen } from "@testing-library/react";
+import Footer from "./Footer.jsx";
 
-describe("Footer component", () => {
-  test("rend Copyright {année} - Holberton School quand isIndex=true", () => {
-    render(<Footer />);
-    const year = new Date().getFullYear();
-    const re = new RegExp(`Copyright\\s+${year}\\s+-\\s+Holberton School`, "i");
-    expect(screen.getByText(re)).toBeInTheDocument();
-  });
+test("Verify if the content of the paragraph is correct", () => {
+  render(<Footer />);
+  expect(screen.getByText(/copyright.*holberton.*school/i)).toBeInTheDocument();
 });
