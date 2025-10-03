@@ -1,29 +1,32 @@
-import "./Notifications.css";
+import React from "react";
 import NotificationItem from "./NotificationItem";
-import closeIcon from "../assets/close-icon.png";
+
+const defaultList = [
+  { id: 1, type: "default", value: "New course available" },
+  { id: 2, type: "urgent", value: "New resume available" },
+  {
+    id: 3,
+    type: "urgent",
+    html: { __html: "<strong>Urgent requirement</strong> - complete by EOD" },
+  },
+];
 
 export default function Notifications({ notifications = [] }) {
+  const items = notifications.length ? notifications : defaultList;
+
   return (
-    <div className="Notifications" style={{ position: "relative" }}>
+    <div className="notifications" role="region" aria-label="Notifications">
       <p>Here is the list of notifications</p>
       <ul>
-        {notifications.map(({ id, type, value, html }) => (
-          <NotificationItem key={id} type={type} value={value} html={html} />
+        {items.map((n) => (
+          <NotificationItem
+            key={n.id}
+            type={n.type}
+            value={n.value}
+            html={n.html}
+          />
         ))}
       </ul>
-
-      <button
-        aria-label="Close"
-        style={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-          background: "none",
-          cursor: "pointer",
-        }}
-      >
-        <img src={closeIcon} alt="close" style={{ width: 10, height: 10 }} />
-      </button>
     </div>
   );
 }
