@@ -1,20 +1,35 @@
-export default function NotificationItem({ type = "default", html, value }) {
-  const style = { color: type === "urgent" ? "red" : "blue" };
-  if (value) {
+import React from "react";
+
+export default function NotificationItem({
+  type = "default",
+  value = "",
+  html = null,
+}) {
+  const color = type === "urgent" ? "red" : "blue";
+
+  // Rendu conditionnel BASÉ SUR `type`
+  if (type === "default") {
     return (
-      <li data-notification-type={type} style={style}>
+      <li data-notification-type={type} style={{ color }}>
         {value}
       </li>
     );
   }
+
+  // type === "urgent"
   if (html) {
     return (
       <li
         data-notification-type={type}
-        style={style}
+        style={{ color }}
         dangerouslySetInnerHTML={html}
       />
     );
   }
-  return null;
+
+  return (
+    <li data-notification-type={type} style={{ color }}>
+      {value}
+    </li>
+  );
 }
