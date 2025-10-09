@@ -1,43 +1,40 @@
-// src/App/App.spec.js
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import App from "./App";
 
-describe("App lifecycles - keyboard", () => {
-  let alertSpy;
-
-  beforeEach(() => {
-    // mock propre de window.alert
-    alertSpy = jest.spyOn(window, "alert").mockImplementation(() => {});
+describe("App component (task_3)", () => {
+  test("renders notifications text (smoke check from previous tasks)", () => {
+    render(<App />);
+    expect(
+      screen.getByText(/here is the list of notifications/i)
+    ).toBeInTheDocument();
   });
 
-  afterEach(() => {
-    // restore pour éviter les fuites entre tests
-    alertSpy.mockRestore();
+  test("renders Header h1 and default Login when not logged in", () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: /school dashboard/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/login to access the full dashboard/i)).toBeInTheDocument();
   });
 
-  test("Ctrl+h déclenche logOut exactement une fois", () => {
-    const logOut = jest.fn();
-    const { unmount } = render(<App logOut={logOut} />);
-
-    // simule Ctrl + h
-    fireEvent.keyDown(document, { key: "h", ctrlKey: true });
-
-    expect(logOut).toHaveBeenCalledTimes(1);
-
-    // (bonus) après unmount, l’event listener est retiré
-    unmount();
-    fireEvent.keyDown(document, { key: "h", ctrlKey: true });
-    expect(logOut).toHaveBeenCalledTimes(1);
+  test("renders CourseList when logged in (wrapped in BodySectionWithMarginBottom)", () => {
+    render(<App isLoggedIn={true} />);
+    // titre du wrapper
+    expect(
+      screen.getByRole("heading", { level: 2, name: /course list/i })
+    ).toBeInTheDocument();
   });
 
-  test('Ctrl+h déclenche alert("Logging you out")', () => {
-    const logOut = jest.fn();
-    render(<App logOut={logOut} />);
-
-    fireEvent.keyDown(document, { key: "H", ctrlKey: true }); // majuscule OK aussi
-
-    expect(alertSpy).toHaveBeenCalledWith("Logging you out");
+  // ----- Test requis par l'�nonc� -----
+  test('shows "News from the School" block with paragraph', () => {
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 2, name: /news from the school/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/holberton school news goes here/i)
+    ).toBeInTheDocument();
   });
 });
