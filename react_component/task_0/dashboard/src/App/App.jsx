@@ -1,5 +1,5 @@
 ﻿// src/App/App.jsx
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import "./App.css";
 
@@ -9,13 +9,12 @@ import Login from "../Login/Login";
 import Notifications from "../Notifications/Notifications";
 import CourseList from "../CourseList/CourseList";
 
-class App extends Component {
+class App extends React.Component {
   render() {
     const { isLoggedIn } = this.props;
 
     return (
       <>
-        {/* Notifications est souvent rendu en-dehors du container principal */}
         <Notifications />
         <div className="App">
           <Header />
