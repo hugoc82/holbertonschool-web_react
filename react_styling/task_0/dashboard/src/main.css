@@ -1,17 +1,12 @@
 ﻿@import "tailwindcss";
 
-/* Définition du thème (v4, sans fichier de config) */
 @theme {
   --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
                Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
                "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-/* Appliquer la police partout via Tailwind + garantir la propriété CSS explicite */
 @layer base {
-  html { 
-    @apply font-sans;
-    font-family: var(--font-sans);
-  }
+  html { @apply font-sans; }
   body { @apply antialiased; }
 }
