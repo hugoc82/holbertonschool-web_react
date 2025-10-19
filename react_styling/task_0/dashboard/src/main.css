@@ -1,18 +1,14 @@
 @import "tailwindcss";
 
-/* Définition du thème Tailwind v4 – sans fichier de config */
+/* Définition du thème (v4, sans config file) */
 @theme {
-  --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+  --font-sans: Roboto, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
                Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
                "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-/* Appliquer Roboto par défaut partout */
+/* Appliquer la police partout via les utilitaires Tailwind */
 @layer base {
-  html {
-    font-family: var(--font-sans);
-  }
-  body {
-    @apply font-sans antialiased;
-  }
+  html { @apply font-sans; }
+  body { @apply antialiased; }
 }
