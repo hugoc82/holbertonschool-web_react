@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿// src/main.jsx
+import React from "react";
 import { createRoot } from "react-dom/client";
 
 // Roboto 400/500/700
