@@ -1,8 +1,8 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
-/* Définition du thème (v4, sans config file) */
+/* DÃ©finition du thÃ¨me (v4, sans fichier de config) */
 @theme {
-  --font-sans: Roboto, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+  --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
                Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
                "Segoe UI Symbol", "Noto Color Emoji";
 }
