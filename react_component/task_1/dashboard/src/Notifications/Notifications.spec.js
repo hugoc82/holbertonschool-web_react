@@ -1,30 +1,34 @@
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Notifications from "./Notifications.jsx";
+import "@testing-library/jest-dom";
+import Notifications from "./Notifications";
 
-test("Verify the existence of the notifications title Here is the list of notifications", () => {
-  render(<Notifications />);
-  expect(
-    screen.getByText(/here is the list of notifications/i)
-  ).toBeInTheDocument();
-});
+describe("Notifications - markAsRead", () => {
+  let consoleSpy;
 
-test("Verify the existence of the button element in the notifications", () => {
-  render(<Notifications />);
-  expect(screen.getByRole("button")).toBeInTheDocument();
-});
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+  });
 
-test("Verify there are 3 li elements as notifications rendered", () => {
-  render(<Notifications />);
-  const listItems = screen.getAllByRole("listitem");
-  expect(listItems).toHaveLength(3);
-});
+  afterEach(() => {
+    consoleSpy.mockRestore(); // requirement: restore mocked console
+  });
 
-test("Verify whether clicking the close button logs Close button has been clicked to the console", () => {
-  const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-  render(<Notifications />);
-  const closeButton = screen.getByRole("button");
-  fireEvent.click(closeButton);
+  test("clicking on first notification logs 'Notification 1 has been marked as read'", () => {
+    render(<Notifications displayDrawer={true} />); // utilise la liste par défaut
+    const firstItem = screen.getAllByRole("listitem")[0];
+    fireEvent.click(firstItem);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Notification 1 has been marked as read"
+    );
+  });
 
-  expect(consoleSpy).toHaveBeenCalledWith("Close button has been clicked");
-  consoleSpy.mockRestore();
+  test("clicking on second notification logs 'Notification 2 has been marked as read'", () => {
+    render(<Notifications displayDrawer={true} />);
+    const items = screen.getAllByRole("listitem");
+    fireEvent.click(items[1]);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Notification 2 has been marked as read"
+    );
+  });
 });

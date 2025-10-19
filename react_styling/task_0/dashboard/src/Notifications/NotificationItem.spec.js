@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿// src/Notifications/NotificationItem.spec.js
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import NotificationItem from "./NotificationItem";
@@ -6,6 +7,7 @@ import NotificationItem from "./NotificationItem";
 describe("NotificationItem - click handler", () => {
   test("calls markAsRead with its id when clicked", () => {
     const spy = jest.fn();
+
     render(
       <ul>
         <NotificationItem
