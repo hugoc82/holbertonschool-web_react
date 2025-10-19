@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "dashboard",
   "version": "0.0.0",
   "private": true,
@@ -46,8 +46,8 @@
       "jsx"
     ],
     "moduleNameMapper": {
-      "\\.(css)$": "<rootDir>/fileTransformer.js",
-      "\\.(png|jpg|jpeg|gif|svg)$": "<rootDir>/fileTransformer.js"
+      "\\\\.(css)$": "<rootDir>/fileTransformer.js",
+      "\\\\.(png|jpg|jpeg|gif|svg)$": "<rootDir>/fileTransformer.js"
     }
   }
 }
