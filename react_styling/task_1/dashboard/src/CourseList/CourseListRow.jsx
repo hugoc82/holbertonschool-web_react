@@ -2,31 +2,25 @@
 import PropTypes from "prop-types";
 
 /**
- * Règles demandées :
- * - Couleur de fond conditionnelle avec les variables CSS déclarées dans main.css
- * - Opacité 66% pour les lignes d'en-tête, 45% sinon
- * - Bordure autour des cellules (gray-400)
- * - Padding-left: 8px pour les <td>
- * - AUCUNE importation de fichiers CSS ici
+ * Exigences:
+ * - BG conditionnelle via variables CSS (déclarées dans main.css)
+ * - Opacité: 66% pour header, 45% sinon
+ * - Bordure gray-400 autour des cellules
+ * - Padding-left: 8px (pl-2) pour les <td>
+ * - AUCUN import de CSS ici
  */
-
 function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
-  // Utilise color-mix pour appliquer l’opacité tout en gardant les variables CSS
   const rowStyle = {
-    background:
-      isHeader
-        ? "color-mix(in srgb, var(--color-table-header) 66%, transparent)"
-        : "color-mix(in srgb, var(--color-table-rows) 45%, transparent)",
+    background: isHeader
+      ? "color-mix(in srgb, var(--color-table-header) 66%, transparent)"
+      : "color-mix(in srgb, var(--color-table-rows) 45%, transparent)",
   };
 
   if (isHeader) {
     if (textSecondCell === null || textSecondCell === undefined) {
       return (
         <tr style={rowStyle}>
-          <th
-            className="border border-gray-400 text-left"
-            colSpan={2}
-          >
+          <th className="border border-gray-400 text-left" colSpan={2}>
             {textFirstCell}
           </th>
         </tr>

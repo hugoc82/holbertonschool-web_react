@@ -3,14 +3,12 @@ import PropTypes from "prop-types";
 import CourseListRow from "./CourseListRow.jsx";
 
 /**
- * Exigences :
- * - Conteneur responsive qui fait ~80–90% de la largeur
- * - Table prend 100% de la largeur du conteneur
- * - Centrer le conteneur avec espacements
- * - AUCUNE importation de fichier CSS ici
- * - Ne pas supprimer classes/ids existants (on garde l'id si déjà utilisé)
+ * Exigences:
+ * - Conteneur responsive ~80-90% de largeur, centré
+ * - Table en w-full qui remplit le conteneur
+ * - AUCUN import CSS ici
+ * - Ne pas supprimer classes/ids existants
  */
-
 function CourseList({ listCourses }) {
   return (
     <div
