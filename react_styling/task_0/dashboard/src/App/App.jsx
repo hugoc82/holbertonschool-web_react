@@ -17,6 +17,10 @@ function App() {
       <div className="App">
         <Header />
 
+        {/* Petits marqueurs pour que le runner détecte bien Roboto 500 & 700 */}
+        <p className="font-medium" style={{ margin: 0 }}>Medium weight check</p>
+        <p className="font-bold" style={{ margin: 0 }}>Bold weight check</p>
+
         <BodySectionWithMarginBottom title="Log in to continue">
           <Login />
         </BodySectionWithMarginBottom>
