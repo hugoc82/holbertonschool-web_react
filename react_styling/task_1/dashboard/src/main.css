@@ -1,0 +1,19 @@
+﻿@import "tailwindcss";
+
+/* Variables de couleurs requises par l'énoncé */
+:root {
+  --color-table-header: #deb5b5; /* header rows */
+  --color-table-rows: #cdcdcd;   /* simple rows */
+}
+
+/* (on garde la police Roboto par défaut comme en task_0) */
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
+               "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@layer base {
+  html { @apply font-sans; }
+  body { @apply antialiased; }
+}
