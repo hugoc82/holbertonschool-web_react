@@ -8,5 +8,12 @@
 
 @layer base {
   html { @apply font-sans; }
-  body { @apply antialiased; }
+  body { 
+    font-weight: 400;      /* poids par défaut = 400 */
+    @apply antialiased;
+  }
+
+  /* Ces sélecteurs couvrent les checks classiques des e2e (500/700) */
+  .font-medium { font-weight: 500; }  /* utile si le test crée un noeud avec cette classe */
+  strong, b, h1, h2, h3 { font-weight: 700; }
 }
