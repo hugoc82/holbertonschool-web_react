@@ -1,42 +1,21 @@
-﻿import React from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import CourseListRow from "./CourseListRow.jsx";
 
-/**
- * Exigences:
- * - Conteneur responsive ~80-90% de largeur, centré
- * - Table en w-full qui remplit le conteneur
- * - AUCUN import CSS ici
- * - Ne pas supprimer classes/ids existants
- */
 function CourseList({ listCourses }) {
   return (
-    <div
-      className="w-11/12 md:w-4/5 lg:w-4/5 mx-auto my-8 overflow-x-auto"
-      id="CourseListContainer"
-    >
+    <div className="w-11/12 md:w-4/5 lg:w-4/5 mx-auto my-8 overflow-x-auto" id="CourseListContainer">
       <table className="w-full table-auto border-collapse" id="CourseList">
         <thead>
           <CourseListRow isHeader={true} textFirstCell="Available courses" />
-          <CourseListRow
-            isHeader={true}
-            textFirstCell="Course name"
-            textSecondCell="Credit"
-          />
+          <CourseListRow isHeader={true} textFirstCell="Course name" textSecondCell="Credit" />
         </thead>
         <tbody>
           {(!listCourses || listCourses.length === 0) ? (
-            <CourseListRow
-              textFirstCell="No course available yet"
-              textSecondCell={null}
-            />
+            <CourseListRow textFirstCell="No course available yet" textSecondCell={null} />
           ) : (
             listCourses.map(({ id, name, credit }) => (
-              <CourseListRow
-                key={id}
-                textFirstCell={name}
-                textSecondCell={credit}
-              />
+              <CourseListRow key={id} textFirstCell={name} textSecondCell={credit} />
             ))
           )}
         </tbody>

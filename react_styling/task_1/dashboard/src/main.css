@@ -1,18 +1,17 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
-/* Variables de couleurs */
+/* variables demandées par l'énoncé */
 :root {
-  --color-table-header: #deb5b5; /* header rows */
-  --color-table-rows: #cdcdcd;   /* simple rows */
+  --color-table-header: #deb5b5;
+  --color-table-rows: #cdcdcd;
 }
 
-/* On garde Roboto comme en task_0 (pas obligatoire pour ce test, mais propre) */
+/* Roboto + base (hérité de task_0, ok si déjà présent ailleurs) */
 @theme {
   --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
                Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
                "Segoe UI Symbol", "Noto Color Emoji";
 }
-
 @layer base {
   html { @apply font-sans; }
   body { @apply antialiased; }

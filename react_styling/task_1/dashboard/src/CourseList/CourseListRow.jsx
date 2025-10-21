@@ -1,14 +1,6 @@
-﻿import React from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
-/**
- * Exigences:
- * - BG conditionnelle via variables CSS (déclarées dans main.css)
- * - Opacité: 66% pour header, 45% sinon
- * - Bordure gray-400 autour des cellules
- * - Padding-left: 8px (pl-2) pour les <td>
- * - AUCUN import de CSS ici
- */
 function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
   const rowStyle = {
     background: isHeader
