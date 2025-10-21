@@ -8,9 +8,11 @@ import BodySection from "../BodySection/BodySection.jsx";
 import Login from "../Login/Login.jsx";
 import CourseList from "../CourseList/CourseList.jsx";
 
-const listCourses = [];
+const listCourses = []; // â¬…ï¸ forme 1 (hors composant)
 
 function App() {
+  const listCourses = []; // â¬…ï¸ forme 2 (dans le composant)
+
   return (
     <>
       <Notifications />
