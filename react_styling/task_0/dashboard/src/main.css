@@ -1,5 +1,12 @@
 ﻿@import "tailwindcss";
 
+/* Variables de couleurs requises par l'énoncé */
+:root {
+  --color-table-header: #deb5b5; /* header rows */
+  --color-table-rows: #cdcdcd;   /* simple rows */
+}
+
+/* (on garde la police Roboto par défaut comme en task_0) */
 @theme {
   --font-sans: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
                Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
@@ -8,12 +15,5 @@
 
 @layer base {
   html { @apply font-sans; }
-  body { 
-    font-weight: 400;      /* poids par défaut = 400 */
-    @apply antialiased;
-  }
-
-  /* Ces sélecteurs couvrent les checks classiques des e2e (500/700) */
-  .font-medium { font-weight: 500; }  /* utile si le test crée un noeud avec cette classe */
-  strong, b, h1, h2, h3 { font-weight: 700; }
+  body { @apply antialiased; }
 }
