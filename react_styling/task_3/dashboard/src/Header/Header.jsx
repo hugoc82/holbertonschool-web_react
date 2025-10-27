@@ -3,13 +3,17 @@
 export default function Header() {
   return (
     <header
-      className="app-header flex items-center gap-3 bg-white px-4 py-3 border-b-4"
+      className={[
+        'app-header',
+        'flex items-center gap-3 bg-white px-4 py-3 border-b-4',
+        'max-[520px]:flex-col max-[520px]:items-start max-[520px]:gap-2',
+      ].join(' ')}
       style={{ borderBottomColor: 'var(--main-color)' }}
     >
-      {/* Laisse ton <img> si tu en as un (logo) */}
-      {/* <img src={logo} alt="Holberton logo" className="h-12 w-12" /> */}
-
-      <h1 className="text-2xl sm:text-3xl font-bold m-0" style={{ color: 'var(--main-color)' }}>
+      <h1
+        className="m-0 font-bold text-2xl md:text-3xl max-[520px]:text-xl"
+        style={{ color: 'var(--main-color)' }}
+      >
         School dashboard
       </h1>
     </header>

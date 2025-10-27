@@ -1,94 +1,44 @@
-// task_2/dashboard/src/Notifications/Notifications.jsx
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import closebtn from '../assets/close-button.png';
-import NotificationItem from './NotificationItem';
+import React from 'react';
+import NotificationItem from './NotificationItem.jsx';
 
-export default class Notifications extends Component {
-  static propTypes = {
-    notifications: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-        type: PropTypes.string,
-        value: PropTypes.string,
-        html: PropTypes.shape({ __html: PropTypes.string }),
-      })
-    ),
-    displayDrawer: PropTypes.bool,
-  };
-
-  static defaultProps = {
-    notifications: [],
-    displayDrawer: false,
-  };
-
-  shouldComponentUpdate(nextProps) {
-    return nextProps.notifications.length !== this.props.notifications.length;
+export default function Notifications({ displayDrawer = false }) {
+  if (!displayDrawer) {
+    return <div className="notification-title px-3 py-2">Your notifications</div>;
   }
 
-  markAsRead = (id) => {
-    console.log(`Notification ${id} has been marked as read`);
-  };
-
-  render() {
-    const { notifications, displayDrawer } = this.props;
-
-    // Title pinned top-right above the panel
-    const Title = (
-      <div
-        className="notification-title fixed top-2 right-3 z-[1000]"
-        data-testid="notifications-title"
-      >
-        <p className="m-0 p-0 text-sm font-medium">Your notifications</p>
+  return (
+    <div
+      className={[
+        'Notifications notification-drawer',
+        'fixed top-0 right-0 w-[380px] max-w-full bg-white border-l-2 border-b-2 shadow',
+        'max-[912px]:inset-0 max-[912px]:w-screen max-[912px]:h-screen max-[912px]:border-0 max-[912px]:p-4 max-[912px]:overflow-y-auto',
+      ].join(' ')}
+      role="region"
+      aria-label="Notifications"
+      style={{ borderColor: 'var(--main-color)' }}
+    >
+      <div className="notification-title font-bold px-4 py-3 border-b max-[912px]:px-2">
+        Your notifications
       </div>
-    );
-
-    // Drawer with dashed border using --main-color
-    const Drawer = displayDrawer ? (
-      <div
-        className="notifications fixed top-10 right-3 z-[999] w-[360px] max-w-[calc(100%-24px)] rounded-none bg-white box-border p-4 pb-3 border-2 border-dashed"
-        style={{ borderColor: 'var(--main-color)' }}
-      >
-
-        <div className="notification-items">
-          {notifications.length > 0 ? (
-            <>
-              <p className="m-0 mb-3">Here is the list of notifications</p>
-
-              <button
-                onClick={() => console.log('Close button has been clicked')}
-                aria-label="Close"
-                className="notifications-close absolute top-2 right-2 p-1 bg-transparent border-0 cursor-pointer"
-                type="button"
-              >
-                <img src={closebtn} alt="Close" className="block w-3 h-3" />
-              </button>
-
-              <ul className="list-disc list-outside pl-4 m-0">
-                {notifications.map((n) => (
-                  <NotificationItem
-                    key={n.id}
-                    id={n.id}
-                    type={n.type}
-                    value={n.value}
-                    html={n.html}
-                    markAsRead={this.markAsRead}
-                  />
-                ))}
-              </ul>
-            </>
-          ) : (
-            <p className="notifications-empty m-0">No new notification for now</p>
-          )}
-        </div>
+      <div className="notification-items p-4 max-[912px]:p-2">
+        <p className="mb-3">Here is the list of notifications</p>
+        <ul className="ml-5 list-disc max-[912px]:list-none max-[912px]:ml-0">
+          <NotificationItem type="default" value="New course available" />
+          <NotificationItem type="urgent" value="New resume available" />
+          <NotificationItem
+            type="urgent"
+            html={{ __html: '<strong>Urgent requirement</strong> - complete by EOD' }}
+          />
+        </ul>
+        <button
+          aria-label="Close"
+          onClick={() => {}}
+          className="absolute top-2 right-2 h-8 w-8 rounded hover:bg-gray-100"
+          title="Close"
+        >
+          ✕
+        </button>
       </div>
-    ) : null;
-
-    return (
-      <>
-        {Title}
-        {Drawer}
-      </>
-    );
-  }
+    </div>
+  );
 }
