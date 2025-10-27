@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import closeIcon from '../assets/close-icon.png';
 
-// Si ton projet a déjà un NotificationItem séparé, importe-le.
-// Ici on garde le rendu simple pour l’exercice.
 class Notifications extends Component {
-  // ⚠️ Le sujet rappelle que tu as implémenté shouldComponentUpdate :
-  // on l’adapte pour re-render si displayDrawer OU longueur de notifications change.
   shouldComponentUpdate(nextProps) {
     const lengthChanged =
       (this.props.notifications?.length || 0) !==
@@ -14,37 +11,48 @@ class Notifications extends Component {
     return lengthChanged || drawerChanged;
   }
 
+  markAsRead = (id) => {
+    console.log(`Notification ${id} has been marked as read`);
+  };
+
+  handleCloseClick = () => {
+    console.log('Close button has been clicked');
+    this.props.handleHideDrawer?.();
+  };
+
   render() {
     const {
       displayDrawer,
       handleDisplayDrawer,
-      handleHideDrawer,
       notifications = [],
     } = this.props;
 
-    // Menu fermé : cliquer sur le titre ouvre le drawer
     if (!displayDrawer) {
       return (
         <div
-          className="notification-title px-3 py-2 cursor-pointer select-none"
-          onClick={handleDisplayDrawer}
+          className="menuItem notification-title px-3 py-2 cursor-pointer select-none"
+          onClick={() => handleDisplayDrawer?.()}
           data-testid="menu-item"
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') handleDisplayDrawer();
-          }}
           aria-label="Open notifications"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') handleDisplayDrawer?.();
+          }}
         >
           Your notifications
         </div>
       );
     }
 
-    // Drawer ouvert
+    const hasItems = (notifications?.length || 0) > 0;
+
     return (
       <div
-        className="Notifications notification-drawer fixed top-0 right-0 w-[380px] max-w-full bg-white border-l-2 border-b-2 shadow p-4"
+        className={[
+          'Notifications notification-drawer',
+          'fixed top-0 right-0 w-[380px] max-w-full bg-white border-l-2 border-b-2 shadow p-4',
+        ].join(' ')}
         role="region"
         aria-label="Notifications"
         style={{ borderColor: 'var(--main-color)' }}
@@ -54,43 +62,47 @@ class Notifications extends Component {
         </div>
 
         <div className="notification-items pt-3">
-          {notifications.length === 0 ? (
-            <p>No new notification for now</p>
+          {hasItems ? (
+            <>
+              <p>Here is the list of notifications</p>
+              <ul className="list-disc ml-5">
+                {notifications.map((n) => (
+                  <li
+                    key={n.id}
+                    data-notification-type={n.type}
+                    className="py-1 cursor-pointer"
+                    onClick={() => this.markAsRead(n.id)}
+                  >
+                    {n.value ?? <span dangerouslySetInnerHTML={n.html} />}
+                  </li>
+                ))}
+              </ul>
+            </>
           ) : (
-            <ul className="list-disc ml-5">
-              {notifications.map((n) => (
-                <li
-                  key={n.id}
-                  data-notification-type={n.type}
-                  className="py-1"
-                >
-                  {n.value || (
-                    <span dangerouslySetInnerHTML={n.html} />
-                  )}
-                </li>
-              ))}
-            </ul>
+            <p>No new notification for now</p>
           )}
         </div>
 
-        <button
-          aria-label="Close"
-          title="Close"
-          onClick={handleHideDrawer}
-          data-testid="close-btn"
-          className="absolute top-2 right-2 h-8 w-8 rounded hover:bg-gray-100"
-        >
-          ✕
-        </button>
+        {hasItems && (
+          <button
+            aria-label="Close"
+            title="Close"
+            onClick={this.handleCloseClick}
+            data-testid="close-btn"
+            className="absolute top-2 right-2 h-8 w-8 rounded hover:bg-gray-100 p-0 grid place-items-center"
+          >
+            <img src={closeIcon} alt="Close" />
+          </button>
+        )}
       </div>
     );
   }
 }
 
 Notifications.propTypes = {
-  displayDrawer: PropTypes.bool.isRequired,
-  handleDisplayDrawer: PropTypes.func.isRequired,
-  handleHideDrawer: PropTypes.func.isRequired,
+  displayDrawer: PropTypes.bool,
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
   notifications: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
