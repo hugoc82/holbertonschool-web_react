@@ -12,43 +12,51 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    // bind d’abord
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
     this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
     this.handleHideDrawer = this.handleHideDrawer.bind(this);
 
-    // puis initialise le state qui contient user + logOut
+    const user = { email: '', password: '', isLoggedIn: false };
+
     this.state = {
-      user: {
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      },
-      logOut: this.logOut,         // 👈 attendu par le checker
+      // état local “app”
+      user,
       displayDrawer: false,
+      // valeur du provider (SEULEMENT user + logOut)
+      contextValue: {
+        user,
+        logOut: this.logOut,
+      },
     };
   }
 
+  // ---- Notifications ----
   handleDisplayDrawer() { this.setState({ displayDrawer: true }); }
   handleHideDrawer() { this.setState({ displayDrawer: false }); }
 
+  // ---- Auth ----
   logIn(email, password) {
+    const user = { email, password, isLoggedIn: true };
+    // met à jour user ET la valeur de contexte (référence stable depuis le state)
     this.setState((prev) => ({
       ...prev,
-      user: { email, password, isLoggedIn: true },
+      user,
+      contextValue: { ...prev.contextValue, user },
     }));
   }
 
   logOut() {
+    const user = { email: '', password: '', isLoggedIn: false };
     this.setState((prev) => ({
       ...prev,
-      user: { email: '', password: '', isLoggedIn: false },
+      user,
+      contextValue: { ...prev.contextValue, user },
     }));
   }
 
   render() {
-    const { displayDrawer, user } = this.state;
+    const { displayDrawer, user, contextValue } = this.state;
 
     const courses = [
       { id: 1, name: 'ES6', credit: 60 },
@@ -57,8 +65,7 @@ class App extends Component {
     ];
 
     return (
-      // 👇 Fournit directement tout le state au Provider (pas de nouvel objet)
-      <AppContext.Provider value={this.state}>
+      <AppContext.Provider value={contextValue}>
         <div className="App min-h-screen flex flex-col bg-gray-50">
           <Notifications
             displayDrawer={displayDrawer}
@@ -77,11 +84,7 @@ class App extends Component {
             {!user.isLoggedIn ? (
               <>
                 <BodySectionWithMarginBottom title="Log in to continue">
-                  <Login
-                    logIn={this.logIn}
-                    email={user.email}
-                    password={user.password}
-                  />
+                  <Login logIn={this.logIn} email={user.email} password={user.password} />
                 </BodySectionWithMarginBottom>
 
                 <BodySection title="News from the school">
