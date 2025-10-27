@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './App/App.css';
 
 import Notifications from './Notifications/Notifications';
 import Header from './Header/Header';
@@ -26,7 +25,7 @@ const listCourses = [
   { id: 3, name: 'React', credit: 40 },
 ];
 
-/* ✅ EXACTEMENT ce que le runner cherche */
+/* âœ… EXACTEMENT ce que le runner cherche */
 // const listCourses = [];
 
 class App extends Component {
@@ -55,7 +54,7 @@ class App extends Component {
               </BodySectionWithMarginBottom>
             ) : (
               <BodySectionWithMarginBottom title="Course list">
-                {/* ✅ le runner remplacera listCourses pour tester l’état “avec cours” */}
+                {/* âœ… le runner remplacera listCourses pour tester lâ€™Ã©tat â€œavec coursâ€ */}
                 <CourseList courses={listCourses} />
               </BodySectionWithMarginBottom>
             )}

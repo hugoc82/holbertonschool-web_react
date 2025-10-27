@@ -2,7 +2,6 @@
 // import React from 'react';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './App.css';
 
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
@@ -29,7 +28,7 @@ const defaultNotifications = [
 // const defaultCourses = [
 // ];
 
-/* ✅ Le runner attend exactement ce nom et un tableau vide au départ */
+/* âœ… Le runner attend exactement ce nom et un tableau vide au dÃ©part */
 const listCourses = [];
 
 // class App extends React.Component {
@@ -111,7 +110,7 @@ class App extends Component {
               </BodySectionWithMarginBottom>
             )}
 
-            {/* Bloc d’actualité demandé */}
+            {/* Bloc dâ€™actualitÃ© demandÃ© */}
             <BodySection title="News from the School">
               <p>Holberton School News goes here</p>
             </BodySection>
