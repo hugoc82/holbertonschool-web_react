@@ -1,26 +1,29 @@
-﻿import React from 'react';
-import AppContext from '../Context/context.js';
+import { useContext } from 'react';
+import AppContext from '../App/AppContext';
 
-export default function Footer() {
-  const year = new Date().getFullYear();
+function Footer() {
+  const { user, logOut } = useContext(AppContext);
 
+  // ⚠️ Garde la même structure/markup que ta version précédente pour le contenu statique.
+  // Ajuste le texte fixe ci-dessous pour correspondre exactement à ton Footer actuel si besoin.
   return (
-    <AppContext.Consumer>
-      {({ user }) => (
-        <footer
-          className="app-footer mt-auto bg-white px-4 py-3 text-center italic text-sm md:text-base border-t-4 border-solid"
-          style={{ borderTopColor: 'var(--main-color)' }}
-        >
-          <p className="m-0">Copyright {year} - Holberton School</p>
+    <footer className=\"App-footer\">
+      <p>Copyright 2025 - Holberton School</p>
 
-          {/* Paragraphe conditionnel quand connecté */}
-          {user?.isLoggedIn && (
-            <p className="not-italic mt-2">
-              <a href="#contact">Contact us</a>
-            </p>
-          )}
-        </footer>
+      {user?.isLoggedIn && (
+        <p id=\"logoutSection\" data-testid=\"logoutSection\">
+          Welcome <strong>{user.email}</strong>
+          {' '}(<a
+            href=\"#logout\"
+            onClick={(e) => {
+              e.preventDefault();
+              if (typeof logOut === 'function') logOut();
+            }}
+          >logout</a>)
+        </p>
       )}
-    </AppContext.Consumer>
+    </footer>
   );
 }
+
+export default Footer;
