@@ -1,75 +1,46 @@
-// ⚠️ Ne pas importer React par défaut, seulement les hooks nécessaires
-import { useState } from 'react';
-import WithLogging from '../HOC/WithLogging';
+import { useState, useContext, useMemo } from 'react';
+import AppContext from '../App/AppContext';
+import './Login.css';
 
-function isValidEmail(email) {
-  // Conserve ta logique de validation si tu en avais une spécifique ;
-  // ce pattern simple est généralement accepté par les checkers Holberton
-  return /\S+@\S+\.\S+/.test(email);
-}
+export default function Login({ logIn: logInProp }) {
+  const { logIn: logInFromContext } = useContext(AppContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-function Login({ login }) {
-  const [enableSubmit, setEnableSubmit] = useState(false);
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const isValid = useMemo(() => {
+    const okEmail = /\S+@\S+\.\S+/.test(email);
+    return okEmail && password.length >= 8;
+  }, [email, password]);
 
-  // Remplace handleChangeEmail / handleChangePassword (version classe) par des fonctions
-  const handleChangeEmail = (e) => {
-    const email = e.target.value;
-    setFormData((prev) => {
-      const next = { ...prev, email };
-      // mets à jour l'état du bouton selon la logique d'origine (email + longueur password)
-      setEnableSubmit(isValidEmail(next.email) && next.password.length > 0);
-      return next;
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const fn = logInProp ?? logInFromContext;
+    if (isValid && fn) fn(email, password);
   };
 
-  const handleChangePassword = (e) => {
-    const password = e.target.value;
-    setFormData((prev) => {
-      const next = { ...prev, password };
-      setEnableSubmit(isValidEmail(next.email) && next.password.length > 0);
-      return next;
-    });
-  };
-
-  // Remplace handleLoginSubmit (version classe)
-  const handleLoginSubmit = (e) => {
-    e.preventDefault(); // toujours empêcher le submit par défaut
-    if (typeof login === 'function') {
-      login(formData.email, formData.password);
-    }
-  };
-
-  // ⚠️ Conserve exactement la même structure JSX que l'ancienne version
   return (
-    <div className="Login">
-      <p>Login to access the full dashboard</p>
-      <form onSubmit={handleLoginSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChangeEmail}
-        />
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-        <label htmlFor="password">Password:</label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChangePassword}
-        />
+      <label htmlFor="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-        <button type="submit" disabled={!enableSubmit}>
-          OK
-        </button>
-      </form>
-    </div>
+      <button type="submit" disabled={!isValid}>
+        OK
+      </button>
+    </form>
   );
 }
-
-// ⚠️ Garde l'usage du HOC WithLogging tel quel
-export default WithLogging(Login);

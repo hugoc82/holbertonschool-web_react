@@ -1,39 +1,34 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './CourseList.css';
 
-export default function CourseList({ listCourses = [] }) {
-  if (!listCourses.length) {
-    return <p>No course available yet</p>;
-  }
-
+export default function CourseList({ courses = [] }) {
   return (
-    <div className="course-list-wrapper overflow-x-auto">
-      <table className="min-w-full border-collapse text-sm md:text-base">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="text-left px-3 py-2 border">Course name</th>
-            <th className="text-left px-3 py-2 border">Credit</th>
+    <table role="table">
+      <thead>
+        {/* 1ère ligne d'entête */}
+        <tr role="row">
+          <th role="columnheader" colSpan={2}>Available courses</th>
+        </tr>
+        {/* 2ème ligne d'entête */}
+        <tr role="row">
+          <th role="columnheader">Course name</th>
+          <th role="columnheader">Credit</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {courses.length === 0 ? (
+          <tr role="row">
+            <td role="cell" colSpan={2}>No course available yet</td>
           </tr>
-        </thead>
-        <tbody>
-          {listCourses.map((c) => (
-            <tr key={c.id} className="odd:bg-white even:bg-gray-50">
-              <td className="px-3 py-2 border">{c.name}</td>
-              <td className="px-3 py-2 border">{c.credit}</td>
+        ) : (
+          courses.map((c) => (
+            <tr role="row" key={c.id}>
+              <td role="cell">{c.name}</td>
+              <td role="cell">{c.credit}</td>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          ))
+        )}
+      </tbody>
+    </table>
   );
 }
-
-CourseList.propTypes = {
-  listCourses: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      name: PropTypes.string,
-      credit: PropTypes.number,
-    })
-  ),
-};

@@ -1,20 +1,18 @@
-// N'importe que les hooks nécessaire (pas d'import React par défaut)
-import { useState, useMemo, useCallback } from 'react';
+﻿import { useState, useMemo, useCallback } from 'react';
 import AppContext, { defaultUser } from './AppContext';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Login from '../Login/Login';
 import CourseList from '../CourseList/CourseList';
-import { notificationsList, coursesList } from '../utils/data'; // adapte si besoin
+import { notificationsList, coursesList } from '../utils/data';
 
 function App() {
-  // --- State ---
-  const [displayDrawer, setDisplayDrawer] = useState(true);
-  const [user, setUser] = useState(defaultUser); // { email:'', password:'', isLoggedIn:false }
+  const [displayDrawer, setDisplayDrawer] = useState(true); // 👉 ouvert par défaut
+  const [user, setUser] = useState(defaultUser);
   const [notifications, setNotifications] = useState(notificationsList);
+  const [courses] = useState(coursesList);
 
-  // --- Handlers mémoïsés ---
   const handleDisplayDrawer = useCallback(() => setDisplayDrawer(true), []);
   const handleHideDrawer = useCallback(() => setDisplayDrawer(false), []);
 
@@ -23,35 +21,34 @@ function App() {
   }, []);
 
   const logOut = useCallback(() => {
-    setUser({ email: '', password: '', isLoggedIn: false });
+    setUser(defaultUser);
   }, []);
 
   const markNotificationAsRead = useCallback((id) => {
-    // même comportement que l’implémentation classe précédente (immuable + log)
+    // log + retrait de la liste
     // eslint-disable-next-line no-console
     console.log(`Notification ${id} has been marked as read`);
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
-  // --- Valeur de contexte ---
-  const contextValue = useMemo(() => ({ user, logOut }), [user, logOut]);
+  const ctxValue = useMemo(
+    () => ({ user, logIn, logOut }),
+    [user, logIn, logOut]
+  );
 
   return (
-    <AppContext.Provider value={contextValue}>
+    <AppContext.Provider value={ctxValue}>
       <Notifications
         displayDrawer={displayDrawer}
-        listNotifications={notifications}
-        markNotificationAsRead={markNotificationAsRead}
         handleDisplayDrawer={handleDisplayDrawer}
         handleHideDrawer={handleHideDrawer}
+        notifications={notifications}
+        markNotificationAsRead={markNotificationAsRead}
       />
+
       <div className="App">
         <Header />
-        {user.isLoggedIn ? (
-          <CourseList listCourses={coursesList} />
-        ) : (
-          <Login login={logIn} />
-        )}
+        {user.isLoggedIn ? <CourseList courses={courses} /> : <Login logIn={logIn} />}
         <Footer />
       </div>
     </AppContext.Provider>

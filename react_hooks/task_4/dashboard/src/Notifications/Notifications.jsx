@@ -1,106 +1,63 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import closeIcon from '../assets/close-icon.png';
+import { memo } from 'react';
+import NotificationItem from './NotificationItem';
+import './Notifications.css';
 
-class Notifications extends PureComponent {
-  handleCloseClick = () => {
-    console.log('Close button has been clicked');
-    this.props.handleHideDrawer?.();
-  };
+// Accepte `notifications` (tests) et garde compat `listNotifications`
+function Notifications({
+  notifications = [],
+  listNotifications,
+  displayDrawer = false,
+  handleDisplayDrawer,
+  handleHideDrawer,
+  markNotificationAsRead,
+}) {
+  const list = (listNotifications ?? notifications) || [];
+  const hasItems = list.length > 0;
 
-  render() {
-    const {
-      displayDrawer,
-      handleDisplayDrawer,
-      notifications = [],
-      markNotificationAsRead,
-    } = this.props;
-
-    if (!displayDrawer) {
-      return (
-        <div
-          className="menuItem notification-title px-3 py-2 cursor-pointer select-none"
-          onClick={() => handleDisplayDrawer?.()}
-          data-testid="menu-item"
-          role="button"
-          tabIndex={0}
-          aria-label="Open notifications"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') handleDisplayDrawer?.();
-          }}
-        >
+  return (
+    <div className="Notifications">
+      {!displayDrawer && (
+        <div className="menuItem" onClick={handleDisplayDrawer}>
           Your notifications
         </div>
-      );
-    }
+      )}
 
-    const hasItems = (notifications?.length || 0) > 0;
+      {displayDrawer && (
+        <div className="Notifications__drawer">
+          {/* 👉 Bouton Close visible UNIQUEMENT s'il y a des items */}
+          {hasItems && (
+            <button
+              type="button"
+              aria-label="Close"
+              title="Close"
+              onClick={handleHideDrawer}
+            >
+              <img src="../assets/close-icon.png" alt="Close" />
+            </button>
+          )}
 
-    return (
-      <div
-        className={[
-          'Notifications notification-drawer',
-          'fixed top-0 right-0 w-[380px] max-w-full bg-white border-l-2 border-b-2 shadow p-4',
-        ].join(' ')}
-        role="region"
-        aria-label="Notifications"
-        style={{ borderColor: 'var(--main-color)' }}
-      >
-        <div className="notification-title font-bold px-1 pb-2 border-b">
-          Your notifications
-        </div>
+          <p>Here is the list of notifications</p>
 
-        <div className="notification-items pt-3">
-          {hasItems ? (
-            <>
-              <p>Here is the list of notifications</p>
-              <ul className="list-disc ml-5">
-                {notifications.map((n) => (
-                  <li
-                    key={n.id}
-                    data-notification-type={n.type}
-                    className="py-1 cursor-pointer"
-                    onClick={() => markNotificationAsRead?.(n.id)}   {/* ← utilise la prop */}
-                  >
-                    {n.value ?? <span dangerouslySetInnerHTML={n.html} />}
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
+          {!hasItems ? (
             <p>No new notification for now</p>
+          ) : (
+            <ul role="list">
+              {list.map((n) => (
+                <NotificationItem
+                  key={n.id}
+                  id={n.id}
+                  type={n.type}
+                  value={n.value}
+                  html={n.html}
+                  markAsRead={markNotificationAsRead}
+                />
+              ))}
+            </ul>
           )}
         </div>
-
-        {hasItems && (
-          <button
-            aria-label="Close"
-            title="Close"
-            onClick={this.handleCloseClick}
-            data-testid="close-btn"
-            className="absolute top-2 right-2 h-8 w-8 rounded hover:bg-gray-100 p-0 grid place-items-center"
-          >
-            <img src={closeIcon} alt="Close" />
-          </button>
-        )}
-      </div>
-    );
-  }
+      )}
+    </div>
+  );
 }
 
-Notifications.propTypes = {
-  displayDrawer: PropTypes.bool,
-  handleDisplayDrawer: PropTypes.func,
-  handleHideDrawer: PropTypes.func,
-  notifications: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-      type: PropTypes.oneOf(['default', 'urgent']),
-      value: PropTypes.string,
-      html: PropTypes.shape({ __html: PropTypes.string }),
-    })
-  ),
-  markNotificationAsRead: PropTypes.func,
-};
-
-export default Notifications;
+export default memo(Notifications);

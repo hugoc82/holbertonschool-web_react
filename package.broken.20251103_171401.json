@@ -1,0 +1,12 @@
+﻿{
+  "name": "holbertonschool-web_react",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/setupTests.js"]
+  }
+}

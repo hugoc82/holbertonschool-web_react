@@ -12,4 +12,5 @@ const newContext = React.createContext({
   logOut: defaultLogOut,
 });
 
-export default newContext;
+export { default as default } from "../App/AppContext";
+export { defaultUser } from "../App/AppContext";
