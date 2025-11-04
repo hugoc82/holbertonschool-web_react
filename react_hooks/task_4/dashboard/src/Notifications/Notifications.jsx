@@ -1,15 +1,15 @@
 // src/Notifications/Notifications.jsx
-import React from "react";
-import NotificationItem from "./NotificationItem";
-import closeIcon from "../assets/close-icon.png";
+import React, { memo } from "react";
+import closeIcon from "../assets/close_icon.png";
 
 function Notifications({
-  displayDrawer,
+  displayDrawer = false,
   notifications = [],
   handleDisplayDrawer,
   handleHideDrawer,
   markNotificationAsRead,
 }) {
+  // État fermé : on n'affiche que le menuItem cliquable
   if (!displayDrawer) {
     return (
       <div className="Notifications">
@@ -20,7 +20,7 @@ function Notifications({
     );
   }
 
-  const hasItems = notifications.length > 0;
+  const hasItems = (notifications?.length ?? 0) > 0;
 
   return (
     <div className="Notifications">
@@ -29,34 +29,37 @@ function Notifications({
       </div>
 
       <div className="Notifications__drawer">
+        {/* ⚠️ Exigence test: quand la liste est VIDE, NE PAS afficher le bouton Close */}
+        {hasItems && (
+          <button
+            type="button"
+            aria-label="Close"
+            title="Close"
+            onClick={handleHideDrawer}
+          >
+            <img alt="Close" src={closeIcon} />
+          </button>
+        )}
+
         <p>Here is the list of notifications</p>
 
         {hasItems ? (
-          <>
-            <button
-              type="button"
-              aria-label="Close"
-              title="Close"
-              onClick={handleHideDrawer}
-            >
-              <img alt="Close" src={closeIcon} />
-            </button>
-
-            <ul role="list">
-              {notifications.map((n) => (
-                <NotificationItem
-                  key={n.id}
-                  id={n.id}
-                  type={n.type}
-                  value={n.value}
-                  html={n.html}
-                  // ⚠️ le test clique sur le texte de l'item ;
-                  // on doit transmettre markAsRead avec l'id
-                  markAsRead={markNotificationAsRead}
-                />
-              ))}
-            </ul>
-          </>
+          <ul>
+            {notifications.map((n) => (
+              <li
+                key={n.id}
+                role="listitem"
+                data-notification-type={n.type || "default"}
+                onClick={() => markNotificationAsRead?.(n.id)}
+              >
+                {n.value ? (
+                  n.value
+                ) : (
+                  <span dangerouslySetInnerHTML={n.html} />
+                )}
+              </li>
+            ))}
+          </ul>
         ) : (
           <p>No new notification for now</p>
         )}
@@ -65,4 +68,4 @@ function Notifications({
   );
 }
 
-export default Notifications;
+export default memo(Notifications);

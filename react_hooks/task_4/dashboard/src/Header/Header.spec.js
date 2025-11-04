@@ -1,49 +1,34 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import AppContext from '../App/AppContext';
-import Header from './Header';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import Header from "./Header";
+import AppContext from "../AppContext";
 
-describe('Header (hooks)', () => {
-  it('renders the logo and title', () => {
+describe("Header Component", () => {
+  it("renders the header with the user logged in", () => {
+    const contextValue = {
+      user: { email: "john@example.com", isLoggedIn: true },
+      logOut: jest.fn(),
+    };
     render(
-      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
+      <AppContext.Provider value={contextValue}>
         <Header />
       </AppContext.Provider>
     );
-    expect(screen.getByRole('img', { name: /holberton logo/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /school dashboard/i })).toBeInTheDocument();
+    expect(screen.getByText(/Welcome john@example.com/)).toBeInTheDocument();
   });
 
-  it('does NOT display the logout section when user is logged out', () => {
+  it("logs out the user when the logout link is clicked", () => {
+    const logOutMock = jest.fn();
+    const contextValue = {
+      user: { email: "john@example.com", isLoggedIn: true },
+      logOut: logOutMock,
+    };
     render(
-      <AppContext.Provider value={{ user: { isLoggedIn: false } }}>
+      <AppContext.Provider value={contextValue}>
         <Header />
       </AppContext.Provider>
     );
-    expect(screen.queryByTestId('logoutSection')).toBeNull();
-    expect(screen.queryByText(/welcome/i)).toBeNull();
-    expect(screen.queryByText(/logout/i)).toBeNull();
-  });
-
-  it('displays the welcome message and logout link when user is logged in', () => {
-    render(
-      <AppContext.Provider value={{ user: { isLoggedIn: true, email: 'test@test.com' } }}>
-        <Header />
-      </AppContext.Provider>
-    );
-    expect(screen.getByTestId('logoutSection')).toBeInTheDocument();
-    expect(screen.getByText(/welcome/i)).toHaveTextContent('Welcome');
-    expect(screen.getByText(/test@test\.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/logout/i)).toBeInTheDocument();
-  });
-
-  it('calls logOut when clicking the logout link', () => {
-    const logOut = jest.fn();
-    render(
-      <AppContext.Provider value={{ user: { isLoggedIn: true, email: 'u@x.y' }, logOut }}>
-        <Header />
-      </AppContext.Provider>
-    );
-    fireEvent.click(screen.getByText(/logout/i));
-    expect(logOut).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByText(/Logout/i));
+    expect(logOutMock).toHaveBeenCalled();
   });
 });

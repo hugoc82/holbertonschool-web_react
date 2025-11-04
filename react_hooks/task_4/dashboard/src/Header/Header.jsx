@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import AppContext from '../App/AppContext';
-import logo from '../assets/holberton-logo.jpg'; // <- important
+// src/Header/Header.jsx
+import React, { useContext } from "react";
+import AppContext from "../App/AppContext.jsx";
+import logo from "../assets/holberton-logo.jpg";
 
 export default function Header() {
   const { user, logOut } = useContext(AppContext);
@@ -13,7 +14,9 @@ export default function Header() {
       {user?.isLoggedIn && (
         <div className="header-user" data-testid="logoutSection">
           <span>Welcome {user.email} — </span>
-          <a href="#logout" onClick={logOut}>Logout</a>
+          <a href="#logout" onClick={logOut}>
+            Logout
+          </a>
         </div>
       )}
     </header>

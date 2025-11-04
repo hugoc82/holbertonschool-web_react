@@ -1,3 +1,4 @@
+// src/App/AppContext.jsx
 import { createContext } from "react";
 
 export const defaultUser = { email: "", password: "", isLoggedIn: false };

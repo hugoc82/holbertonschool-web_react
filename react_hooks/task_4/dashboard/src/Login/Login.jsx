@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+// src/Login/Login.jsx
+import React, { useState, useMemo, useCallback } from "react";
 
-export default function Login({ logIn = () => {} }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login({ logIn, onLogin }) {
+  const loginFn = onLogin ?? logIn ?? (() => {});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const isEmailValid = /\S+@\S+\.\S+/.test(email);
-  const isPasswordValid = password.length >= 6;
-  const canSubmit = isEmailValid && isPasswordValid;
+  const isEmailValid = useMemo(() => /\S+@\S+\.\S+/.test(email), [email]);
+  const isPasswordValid = useMemo(() => password.length >= 8, [password]);
+  const enableSubmit = isEmailValid && isPasswordValid;
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (canSubmit) {
-      logIn(email, password);
-    }
-  };
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (enableSubmit) loginFn(email, password);
+    },
+    [enableSubmit, email, password, loginFn]
+  );
 
   return (
     <form onSubmit={onSubmit}>
@@ -35,7 +38,9 @@ export default function Login({ logIn = () => {} }) {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button type="submit" disabled={!canSubmit}>OK</button>
+      <button type="submit" disabled={!enableSubmit}>
+        OK
+      </button>
     </form>
   );
 }
