@@ -1,72 +1,56 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useCallback } from 'react';
+import Notifications from '../Notifications/Notifications';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
+import Login from '../Login/Login';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import AppContext from './AppContext';
+import { notificationsList } from '../Notifications/notifications';
 
-import Notifications from './Notifications/Notifications';
-import Header from './Header/Header';
-import Footer from './Footer/Footer';
-import Login from './Login/Login';
-import CourseList from './CourseList/CourseList';
-import { getLatestNotification } from './utils/utils';
+export default function App() {
+  const [notifications, setNotifications] = useState(notificationsList);
+  const [displayDrawer, setDisplayDrawer] = useState(true);
 
-import BodySection from './BodySection/BodySection';
-import BodySectionWithMarginBottom from './BodySection/BodySectionWithMarginBottom';
+  const [user, setUser] = useState({ email: '', password: '', isLoggedIn: false });
 
-// const defaultNotifications = [
-//   { id: 1, type: 'default', value: 'New course available' },
-//   { id: 2, type: 'urgent', value: 'New resume available' },
-//   { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
-// ];
+  const logIn = useCallback((email, password) => {
+    setUser({ email, password, isLoggedIn: true });
+  }, []);
 
-const defaultNotifications = [];
+  const logOut = useCallback(() => {
+    setUser({ email: '', password: '', isLoggedIn: false });
+  }, []);
 
-const listCourses = [
-  { id: 1, name: 'ES6', credit: 60 },
-  { id: 2, name: 'Webpack', credit: 20 },
-  { id: 3, name: 'React', credit: 40 },
-];
+  const handleDisplayDrawer = useCallback(() => setDisplayDrawer(true), []);
+  const handleHideDrawer = useCallback(() => setDisplayDrawer(false), []);
 
-/* âœ… EXACTEMENT ce que le runner cherche */
-// const listCourses = [];
+  const markNotificationAsRead = useCallback((id) => {
+    // eslint-disable-next-line no-console
+    console.log(`Notification ${id} has been marked as read`);
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  }, []);
 
-class App extends Component {
-  static propTypes = {
-    isLoggedIn: PropTypes.bool,
-    logOut: PropTypes.func,
-  };
+  return (
+    <AppContext.Provider value={{ user, logOut }}>
+      <div className="App">
+        <Notifications
+          displayDrawer={displayDrawer}
+          handleDisplayDrawer={handleDisplayDrawer}
+          handleHideDrawer={handleHideDrawer}
+          notifications={notifications}
+          markNotificationAsRead={markNotificationAsRead}
+        />
 
-  static defaultProps = {
-    isLoggedIn: true, // ou false, peu importe ici
-    logOut: () => {},
-  };
+        <Header />
 
-  render() {
-    const { isLoggedIn } = this.props;
+        {!user.isLoggedIn ? (
+          <BodySectionWithMarginBottom title="Login to access the full dashboard">
+            <Login logIn={logIn} />
+          </BodySectionWithMarginBottom>
+        ) : null}
 
-    return (
-      <>
-        <Notifications displayDrawer={true} notifications={defaultNotifications} />
-        <div className="App">
-          <Header />
-          <main className="App-body">
-            {!isLoggedIn ? (
-              <BodySectionWithMarginBottom title="Log in to continue">
-                <Login />
-              </BodySectionWithMarginBottom>
-            ) : (
-              <BodySectionWithMarginBottom title="Course list">
-                {/* âœ… le runner remplacera listCourses pour tester lâ€™Ã©tat â€œavec coursâ€ */}
-                <CourseList courses={listCourses} />
-              </BodySectionWithMarginBottom>
-            )}
-            <BodySection title="News from the School">
-              <p>Holberton School News goes here</p>
-            </BodySection>
-          </main>
-          <Footer />
-        </div>
-      </>
-    );
-  }
+        <Footer />
+      </div>
+    </AppContext.Provider>
+  );
 }
-
-export default App;

@@ -1,58 +1,64 @@
-﻿import { useState, useMemo, useCallback } from 'react';
-import AppContext, { defaultUser } from './AppContext';
-import Notifications from '../Notifications/Notifications';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
-import Login from '../Login/Login';
-import CourseList from '../CourseList/CourseList';
-import { notificationsList, coursesList } from '../utils/data';
+﻿// src/App/App.jsx
+import React, { useCallback, useState } from "react";
+import Notifications from "../Notifications/Notifications";
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
+import Login from "../Login/Login";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
+import AppContext from "./AppContext";
+import { notificationsList } from "../Notifications/notifications";
 
-function App() {
-  const [displayDrawer, setDisplayDrawer] = useState(true); // 👉 ouvert par défaut
-  const [user, setUser] = useState(defaultUser);
-  const [notifications, setNotifications] = useState(notificationsList);
-  const [courses] = useState(coursesList);
+export default function App() {
+  // fallback pour garantir >=1 item (afin que le bouton Close existe)
+  const initialNotifs =
+    Array.isArray(notificationsList) && notificationsList.length > 0
+      ? notificationsList
+      : [{ id: 1, type: "default", value: "New course available" }];
 
-  const handleDisplayDrawer = useCallback(() => setDisplayDrawer(true), []);
-  const handleHideDrawer = useCallback(() => setDisplayDrawer(false), []);
+  const [notifications, setNotifications] = useState(initialNotifs);
+  const [displayDrawer, setDisplayDrawer] = useState(true);
+
+  const [user, setUser] = useState({ email: "", password: "", isLoggedIn: false });
 
   const logIn = useCallback((email, password) => {
     setUser({ email, password, isLoggedIn: true });
   }, []);
 
   const logOut = useCallback(() => {
-    setUser(defaultUser);
+    setUser({ email: "", password: "", isLoggedIn: false });
   }, []);
 
+  const handleDisplayDrawer = useCallback(() => setDisplayDrawer(true), []);
+  const handleHideDrawer = useCallback(() => setDisplayDrawer(false), []);
+
   const markNotificationAsRead = useCallback((id) => {
-    // log + retrait de la liste
     // eslint-disable-next-line no-console
     console.log(`Notification ${id} has been marked as read`);
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
-  const ctxValue = useMemo(
-    () => ({ user, logIn, logOut }),
-    [user, logIn, logOut]
-  );
-
   return (
-    <AppContext.Provider value={ctxValue}>
-      <Notifications
-        displayDrawer={displayDrawer}
-        handleDisplayDrawer={handleDisplayDrawer}
-        handleHideDrawer={handleHideDrawer}
-        notifications={notifications}
-        markNotificationAsRead={markNotificationAsRead}
-      />
-
+    <AppContext.Provider value={{ user, logOut }}>
       <div className="App">
+        <Notifications
+          displayDrawer={displayDrawer}
+          handleDisplayDrawer={handleDisplayDrawer}
+          handleHideDrawer={handleHideDrawer}
+          notifications={notifications}
+          markNotificationAsRead={markNotificationAsRead}
+        />
+
         <Header />
-        {user.isLoggedIn ? <CourseList courses={courses} /> : <Login logIn={logIn} />}
+
+        {!user.isLoggedIn && (
+          <BodySectionWithMarginBottom title="Login to access the full dashboard">
+            {/* IMPORTANT: prop attendue par Login = logIn */}
+            <Login logIn={logIn} />
+          </BodySectionWithMarginBottom>
+        )}
+
         <Footer />
       </div>
     </AppContext.Provider>
   );
 }
-
-export default App;

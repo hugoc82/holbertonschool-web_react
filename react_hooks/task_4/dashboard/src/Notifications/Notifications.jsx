@@ -1,63 +1,68 @@
-import { memo } from 'react';
-import NotificationItem from './NotificationItem';
-import './Notifications.css';
+// src/Notifications/Notifications.jsx
+import React from "react";
+import NotificationItem from "./NotificationItem";
+import closeIcon from "../assets/close-icon.png";
 
-// Accepte `notifications` (tests) et garde compat `listNotifications`
 function Notifications({
+  displayDrawer,
   notifications = [],
-  listNotifications,
-  displayDrawer = false,
   handleDisplayDrawer,
   handleHideDrawer,
   markNotificationAsRead,
 }) {
-  const list = (listNotifications ?? notifications) || [];
-  const hasItems = list.length > 0;
-
-  return (
-    <div className="Notifications">
-      {!displayDrawer && (
+  if (!displayDrawer) {
+    return (
+      <div className="Notifications">
         <div className="menuItem" onClick={handleDisplayDrawer}>
           Your notifications
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {displayDrawer && (
-        <div className="Notifications__drawer">
-          {/* 👉 Bouton Close visible UNIQUEMENT s'il y a des items */}
-          {hasItems && (
+  const hasItems = notifications.length > 0;
+
+  return (
+    <div className="Notifications">
+      <div className="menuItem" onClick={handleDisplayDrawer}>
+        Your notifications
+      </div>
+
+      <div className="Notifications__drawer">
+        <p>Here is the list of notifications</p>
+
+        {hasItems ? (
+          <>
             <button
               type="button"
               aria-label="Close"
               title="Close"
               onClick={handleHideDrawer}
             >
-              <img src="../assets/close-icon.png" alt="Close" />
+              <img alt="Close" src={closeIcon} />
             </button>
-          )}
 
-          <p>Here is the list of notifications</p>
-
-          {!hasItems ? (
-            <p>No new notification for now</p>
-          ) : (
             <ul role="list">
-              {list.map((n) => (
+              {notifications.map((n) => (
                 <NotificationItem
                   key={n.id}
                   id={n.id}
                   type={n.type}
                   value={n.value}
                   html={n.html}
+                  // ⚠️ le test clique sur le texte de l'item ;
+                  // on doit transmettre markAsRead avec l'id
                   markAsRead={markNotificationAsRead}
                 />
               ))}
             </ul>
-          )}
-        </div>
-      )}
+          </>
+        ) : (
+          <p>No new notification for now</p>
+        )}
+      </div>
     </div>
   );
 }
 
-export default memo(Notifications);
+export default Notifications;

@@ -1,28 +1,19 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../App/AppContext';
-import holbertonLogo from '../assets/holberton-logo.jpg';
-import './Header.css';
+import logo from '../assets/holberton-logo.jpg'; // <- important
 
 export default function Header() {
   const { user, logOut } = useContext(AppContext);
 
   return (
     <header className="App-header">
-      <img src={holbertonLogo} alt="Holberton logo" />
+      <img src={logo} alt="Holberton logo" />
       <h1>School dashboard</h1>
 
       {user?.isLoggedIn && (
-        <div className="header-user">
+        <div className="header-user" data-testid="logoutSection">
           <span>Welcome {user.email} — </span>
-          <a
-            href="#logout"
-            onClick={(e) => {
-              e.preventDefault();
-              logOut && logOut();
-            }}
-          >
-            Logout
-          </a>
+          <a href="#logout" onClick={logOut}>Logout</a>
         </div>
       )}
     </header>

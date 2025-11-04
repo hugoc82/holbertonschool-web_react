@@ -1,25 +1,22 @@
-import { useState, useContext, useMemo } from 'react';
-import AppContext from '../App/AppContext';
-import './Login.css';
+import React, { useState } from 'react';
 
-export default function Login({ logIn: logInProp }) {
-  const { logIn: logInFromContext } = useContext(AppContext);
+export default function Login({ logIn = () => {} }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const isValid = useMemo(() => {
-    const okEmail = /\S+@\S+\.\S+/.test(email);
-    return okEmail && password.length >= 8;
-  }, [email, password]);
+  const isEmailValid = /\S+@\S+\.\S+/.test(email);
+  const isPasswordValid = password.length >= 6;
+  const canSubmit = isEmailValid && isPasswordValid;
 
-  const handleSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    const fn = logInProp ?? logInFromContext;
-    if (isValid && fn) fn(email, password);
+    if (canSubmit) {
+      logIn(email, password);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={onSubmit}>
       <label htmlFor="email">Email</label>
       <input
         id="email"
@@ -38,9 +35,7 @@ export default function Login({ logIn: logInProp }) {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button type="submit" disabled={!isValid}>
-        OK
-      </button>
+      <button type="submit" disabled={!canSubmit}>OK</button>
     </form>
   );
 }

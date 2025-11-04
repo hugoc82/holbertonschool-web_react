@@ -1,13 +1,16 @@
-import { memo } from 'react';
+// src/Notifications/NotificationItem.jsx
+import { memo } from "react";
 
-function NotificationItem({ id, type = 'default', value, html, markAsRead }) {
+function NotificationItem({ id, type = "default", value, html, markAsRead }) {
+  const handleClick = () => markAsRead?.(id);
+
   return (
     <li
       role="listitem"
       data-notification-type={type}
-      onClick={() => markAsRead?.(id)}
+      onClick={handleClick}
     >
-      {value ?? <span dangerouslySetInnerHTML={html} />}
+      {value ? value : <span dangerouslySetInnerHTML={html} />}
     </li>
   );
 }
