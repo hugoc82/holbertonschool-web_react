@@ -16,6 +16,7 @@ module.exports = {
     '^.+\\.[jt]sx?$': 'babel-jest'
   },
   moduleNameMapper: {
++   '^axios$': 'jest-mock-axios',
     '\\.(css|scss|sass|less)$': '<rootDir>/styleMock.js',
     '\\.(png|jpe?g|gif|svg)$': '<rootDir>/fileMock.js'
   }
