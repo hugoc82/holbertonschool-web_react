@@ -1,55 +1,64 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import mockAxios from "axios"; // mappé vers jest-mock-axios
+import App from "./App";
 
-function openDrawer() {
-  // clic sur la zone menuItem (ouvre le drawer)
-  fireEvent.click(screen.getByText(/your notifications/i));
-}
-
-describe('App (hooks)', () => {
-  it('toggles drawer with handleDisplayDrawer / handleHideDrawer via UI', () => {
-    render(<App />);
-    // Au départ displayDrawer=true dans l’énoncé ; on vérifie la présence
-    expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
-
-    // Fermer via bouton "x"
-    fireEvent.click(screen.getByRole('button', { name: /close/i }));
-    expect(screen.queryByText(/here is the list of notifications/i)).toBeNull();
-
-    // Réouvrir via menuItem
-    openDrawer();
-    expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
+describe("App (hooks) — data fetching side effects", () => {
+  afterEach(() => {
+    mockAxios.reset();
   });
 
-  it('logIn updates user state (email/password/isLoggedIn)', () => {
+  test("fetches notifications on initial load and renders items", async () => {
     render(<App />);
 
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'john@doe.com' } });
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pwd123' } });
+    // L’app appelle /notifications.json au montage
+    expect(mockAxios.get).toHaveBeenCalledWith("/notifications.json");
 
-    // bouton OK (devient enabled selon ta logique de validation)
-    const btn = screen.getByRole('button', { name: /ok/i });
-    fireEvent.click(btn);
+    // On simule la réponse
+    mockAxios.mockResponse({
+      data: [
+        { id: 1, type: "default", value: "New course available" },
+        { id: 2, type: "urgent", value: "New resume available" },
+        { id: 3, type: "urgent", html: true }, // sera remplacé par getLatestNotification()
+      ],
+    });
 
-    // Une fois connecté, on s’attend à voir l’écran des cours (ou un indicateur de login)
-    expect(screen.queryByText(/login to access the full dashboard/i)).toBeNull();
-    // par ex : un élément du CourseList si présent
-    // sinon, teste la présence du lien "logout" dans Header/Footer
-    expect(screen.getByText(/logout/i)).toBeInTheDocument();
+    // Le texte générique est là quelle que soit la liste
+    expect(
+      await screen.findByText(/here is the list of notifications/i)
+    ).toBeInTheDocument();
+
+    // Et au moins un item texte simple
+    expect(screen.getByText(/new course available/i)).toBeInTheDocument();
   });
 
-  it('logOut resets user (isLoggedIn=false, clears email/password)', () => {
+  test("fetches courses whenever user state changes (login)", async () => {
     render(<App />);
 
-    // login d’abord
-    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'john@doe.com' } });
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pwd123' } });
-    fireEvent.click(screen.getByRole('button', { name: /ok/i }));
+    // 1) Réponse notifications (sinon la requête reste en attente)
+    mockAxios.mockResponse({ data: [] });
 
-    // puis logout via un des liens (Header ou Footer)
-    fireEvent.click(screen.getByText(/logout/i));
+    // 2) Simuler un login via le formulaire
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "john@doe.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "pwd123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /ok/i }));
 
-    // retour à l’écran Login (isLoggedIn=false)
-    expect(screen.getByText(/login to access the full dashboard/i)).toBeInTheDocument();
+    // Après login, l’app doit fetch /courses.json
+    expect(mockAxios.get).toHaveBeenCalledWith("/courses.json");
+
+    // On renvoie des cours
+    mockAxios.mockResponse({
+      data: [
+        { id: 1, name: "ES6", credit: 60 },
+        { id: 2, name: "Webpack", credit: 20 },
+      ],
+    });
+
+    // On peut juste vérifier qu'il n'y a pas d’erreurs et que le composant continue de fonctionner
+    expect(screen.getByText(/school dashboard/i)).toBeInTheDocument();
   });
 });
