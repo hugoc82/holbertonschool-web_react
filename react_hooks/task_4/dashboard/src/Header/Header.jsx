@@ -1,24 +1,49 @@
-// src/Header/Header.jsx
-import React, { useContext } from "react";
-import AppContext from "../App/AppContext.jsx";
+import { useContext } from "react";
 import logo from "../assets/holberton-logo.jpg";
+import newContext from "../Context/context";
+import { StyleSheet, css } from "aphrodite";
 
-export default function Header() {
-  const { user, logOut } = useContext(AppContext);
+const styles = StyleSheet.create({
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  logo: {
+    height: "30vmin",
+    pointerEvents: "none",
+  },
+  h1: {
+    color: "#e1003c",
+    fontFamily: "Roboto, sans-serif",
+    fontWeight: "bold",
+    fontSize: "2.5rem",
+    margin: 0,
+  },
+  a: {
+    fontFamily: "Roboto, sans-serif",
+    fontSize: "1.2rem",
+    marginLeft: "auto",
+    cursor: "pointer",
+  },
+});
+
+const Header = () => {
+  const { user, logOut } = useContext(newContext);
 
   return (
-    <header className="App-header">
-      <img src={logo} alt="Holberton logo" />
-      <h1>School dashboard</h1>
-
-      {user?.isLoggedIn && (
-        <div className="header-user" data-testid="logoutSection">
-          <span>Welcome {user.email} — </span>
-          <a href="#logout" onClick={logOut}>
-            Logout
-          </a>
-        </div>
+    <>
+      <div className={css(styles.header)}>
+        <img src={logo} className={css(styles.logo)} alt="holberton logo" />
+        <h1 className={css(styles.h1)}>School Dashboard</h1>
+      </div>
+      {user.isLoggedIn && (
+        <p id="logoutSection" className={css(styles.logoutSection)}>
+          Welcome {user.email} <a href='#' className={css(styles.a)} onClick={logOut}>(logout)</a>
+        </p>
       )}
-    </header>
+    </>
   );
-}
+};
+
+export default Header;

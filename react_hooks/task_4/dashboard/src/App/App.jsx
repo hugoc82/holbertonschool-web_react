@@ -1,69 +1,145 @@
-﻿// src/App/App.jsx
-import React, { useCallback, useMemo, useState } from "react";
-import AppContext, { defaultUser } from "../AppContext.jsx";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
-import Notifications from "../Notifications/Notifications";
-import Login from "../Login/Login";
-import { notificationsList } from "../Notifications/notifications";
+﻿import { useEffect, useState, useCallback } from 'react';
+import axios from 'axios';
+import { StyleSheet, css } from 'aphrodite';
+import Notifications from '../Notifications/Notifications';
+import Footer from '../Footer/Footer';
+import Header from '../Header/Header';
+import Login from '../Login/Login';
+import CourseList from '../CourseList/CourseList';
+import { getLatestNotification } from '../utils/utils';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import BodySection from '../BodySection/BodySection';
+import newContext from '../Context/context';
 
-// 🚫 Aucun code de classe ni “class App” ici (même pas en commentaire)
+const API_BASE_URL = 'http://localhost:5173';
+const ENDPOINTS = {
+  courses: `${API_BASE_URL}/courses.json`,
+  notifications: `${API_BASE_URL}/notifications.json`,
+};
+
+const styles = StyleSheet.create({
+  app: {
+    position: 'relative'
+  }
+});
 
 export default function App() {
-  // --- états demandés (hooks) ---
   const [displayDrawer, setDisplayDrawer] = useState(true);
-  const [user, setUser] = useState(defaultUser);
-  const [notifications, setNotifications] = useState(notificationsList);
+  const [user, setUser] = useState({ ...newContext.user });
+  const [notifications, setNotifications] = useState([]);
+  const [courses, setCourses] = useState([]);
 
-  // --- handlers mémorisés ---
-  const handleDisplayDrawer = useCallback(() => setDisplayDrawer(true), []);
-  const handleHideDrawer = useCallback(() => setDisplayDrawer(false), []);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(ENDPOINTS.notifications);
+        const latestNotif = {
+          id: 3,
+          type: "urgent",
+          html: { __html: getLatestNotification() }
+        };
+        
+        const currentNotifications = response.data.notifications;
+        const indexToReplace = currentNotifications.findIndex(
+          notification => notification.id === 3
+        );
+        
+        const updatedNotifications = [...currentNotifications];
+        if (indexToReplace !== -1) {
+          updatedNotifications[indexToReplace] = latestNotif;
+        } else {
+          updatedNotifications.push(latestNotif);
+        }
+        
+        setNotifications(updatedNotifications);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
 
-  const logIn = useCallback((email, password) => {
-    setUser({ email, password, isLoggedIn: true });
+    fetchNotifications();
   }, []);
 
-  const logOut = useCallback(() => {
-    setUser({ ...defaultUser });
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get(ENDPOINTS.courses);
+        setCourses(response.data.courses);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    if (!user.isLoggedIn) {
+      setCourses([]);
+      return;
+    }
+
+    fetchCourses();
+  }, [user.isLoggedIn]);
+
+  const handleDisplayDrawer = useCallback(() => {
+    setDisplayDrawer(true);
   }, []);
+
+  const handleHideDrawer = useCallback(() => {
+    setDisplayDrawer(false);
+  }, []);
+
+  const logIn = (email, password) => {
+    setUser({
+      email,
+      password,
+      isLoggedIn: true
+    });
+  };
+
+  const logOut = () => {
+    setUser({
+      email: '',
+      password: '',
+      isLoggedIn: false,
+    });
+  };
 
   const markNotificationAsRead = useCallback((id) => {
-    // eslint-disable-next-line no-console
+    setNotifications(prev =>
+      prev.filter(notification => notification.id !== id)
+    );
     console.log(`Notification ${id} has been marked as read`);
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
-  // --- valeur de contexte stable ---
-  const ctxValue = useMemo(() => ({ user, logOut }), [user, logOut]);
-
   return (
-    <AppContext.Provider value={ctxValue}>
-      <div className="App">
+    <newContext.Provider value={{ user, logOut }}>
+      <div className={css(styles.app)}>
         <Notifications
-          displayDrawer={displayDrawer}
-          handleDisplayDrawer={handleDisplayDrawer}
-          handleHideDrawer={handleHideDrawer}
           notifications={notifications}
+          handleHideDrawer={handleHideDrawer}
+          handleDisplayDrawer={handleDisplayDrawer}
+          displayDrawer={displayDrawer}
           markNotificationAsRead={markNotificationAsRead}
         />
-
-        <Header />
-
-        {!user.isLoggedIn ? (
-          <BodySectionWithMarginBottom title="Login to access the full dashboard">
-            {/* Le Login doit appeler la prop logIn(email, password) */}
-            <Login logIn={logIn} />
-          </BodySectionWithMarginBottom>
-        ) : (
-          <BodySectionWithMarginBottom title="Course list">
-            {/* on peut mettre ici un placeholder simple pour les tests */}
-            <div>Welcome {user.email}</div>
-          </BodySectionWithMarginBottom>
-        )}
-
+        <>
+          <Header />
+          {!user.isLoggedIn ? (
+            <BodySectionWithMarginBottom title='Log in to continue'>
+              <Login
+                logIn={logIn}
+                email={user.email}
+                password={user.password}
+              />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title='Course list'>
+              <CourseList courses={courses} />
+            </BodySectionWithMarginBottom>
+          )}
+          <BodySection title="News from the School">
+            <p>Holberton School news goes here</p>
+          </BodySection>
+        </>
         <Footer />
       </div>
-    </AppContext.Provider>
+    </newContext.Provider>
   );
 }

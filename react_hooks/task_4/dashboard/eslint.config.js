@@ -1,26 +1,22 @@
-import js from "@eslint/js";
-import globals from "globals";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-
-export default [
-  {
-    files: ["**/*.{js,jsx}"],
-    ignores: ["dist/**", "node_modules/**"],
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: { ...globals.browser, ...globals.node, ...globals.jest },
-      parserOptions: { ecmaFeatures: { jsx: true } },
-    },
-    plugins: { react, "react-hooks": reactHooks },
-    rules: {
-      ...js.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
-      "no-unused-vars": "error",
-    },
-    settings: { react: { version: "detect" } },
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true, jest: true, node: true },
+  extends: [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended",
+  ],
+  ignorePatterns: ["dist", ".eslintrc.cjs"],
+  parserOptions: { ecmaVersion: "latest", sourceType: "module" },
+  settings: { react: { version: "18.2" } },
+  plugins: ["react-refresh"],
+  rules: {
+    "react-refresh/only-export-components": [
+      "off",
+      { allowConstantExport: true },
+    ],
+    "react/jsx-no-target-blank": "off",
+    "react/prop-types": "off",
   },
-];
+};
