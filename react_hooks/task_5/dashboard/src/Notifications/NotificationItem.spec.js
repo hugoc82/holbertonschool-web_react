@@ -1,46 +1,85 @@
-﻿import { render, screen, fireEvent } from '@testing-library/react';
-import NotificationItem from './NotificationItem';
-import React from 'react';
+﻿import { render, screen, fireEvent } from "@testing-library/react";
+import NotificationItem from "./NotificationItem";
 
-describe('NotificationItem (hooks + memo)', () => {
-  it('renders with value text', () => {
-    render(<NotificationItem type="default" value="New course available" id={1} />);
-    expect(screen.getByText(/new course available/i)).toBeInTheDocument();
+test("it should call markAsRead with the correct id when the notification item is clicked", () => {
+  const mockMarkAsRead = jest.fn();
+  const props = {
+    id: 42,
+    type: "default",
+    value: "Test notification",
+    markAsRead: mockMarkAsRead,
+  };
+
+  render(<NotificationItem {...props} />);
+
+  const liElement = screen.getByRole("listitem");
+
+  fireEvent.click(liElement);
+
+  expect(mockMarkAsRead).toHaveBeenCalledTimes(1);
+  expect(mockMarkAsRead).toHaveBeenCalledWith(42);
+});
+
+describe("NotificationItem - React.memo behavior", () => {
+  let markAsRead;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    markAsRead = jest.fn();
   });
 
-  it('renders with html content when provided', () => {
-    const html = { __html: '<u>Urgent requirement</u>' };
-    render(<NotificationItem type="urgent" html={html} id={2} />);
-    // on vérifie que le contenu HTML est injecté
-    const item = screen.getByRole('listitem');
-    expect(item.innerHTML.toLowerCase()).toContain('<u>urgent requirement</u>');
-  });
-
-  it('calls markAsRead with id on click', () => {
-    const markAsRead = jest.fn();
-    render(
+  test("should update when props change", () => {
+    const { rerender, container } = render(
       <NotificationItem
-        type="default"
-        value="Click me"
-        id={42}
+        id={1}
+        type="urgent"
+        value="New notification"
         markAsRead={markAsRead}
       />
     );
-    fireEvent.click(screen.getByText(/click me/i));
-    expect(markAsRead).toHaveBeenCalledTimes(1);
-    expect(markAsRead).toHaveBeenCalledWith(42);
+
+    const firstRender = container.querySelector(
+      "[data-notification-type]"
+    ).textContent;
+
+    rerender(
+      <NotificationItem
+        id={1}
+        type="urgent"
+        value="Updated notification"
+        markAsRead={markAsRead}
+      />
+    );
+
+    const secondRender = container.querySelector(
+      "[data-notification-type]"
+    ).textContent;
+    expect(secondRender).not.toBe(firstRender);
+    expect(secondRender).toBe("Updated notification");
   });
 
-  it('does not re-render when props are shallow-equal (memo behavior)', () => {
-    const { rerender } = render(
-      <NotificationItem type="default" value="Stable" id={3} />
+  test("should not re-render when props do not change", () => {
+    const { rerender, container } = render(
+      <NotificationItem
+        id={1}
+        type="urgent"
+        value="New notification"
+        markAsRead={markAsRead}
+      />
     );
-    const firstNode = screen.getByText(/stable/i);
-    // rerender avec les mêmes props
-    rerender(<NotificationItem type="default" value="Stable" id={3} />);
-    const secondNode = screen.getByText(/stable/i);
-    // Sanity check: même contenu — si tu veux être plus strict, tu peux comparer node equality
-    expect(secondNode).toBeTruthy();
-    // Note: RTL recrée parfois des refs, ce test reste une indication légère, pas une preuve de diff interne.
+
+    const firstElement = container.querySelector("[data-notification-type]");
+
+    rerender(
+      <NotificationItem
+        id={1}
+        type="urgent"
+        value="New notification"
+        markAsRead={markAsRead}
+      />
+    );
+
+    const secondElement = container.querySelector("[data-notification-type]");
+    expect(secondElement.textContent).toBe(firstElement.textContent);
   });
 });

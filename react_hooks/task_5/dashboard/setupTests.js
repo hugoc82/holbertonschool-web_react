@@ -1,2 +1,10 @@
-// Chargé avant chaque test
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
+import { StyleSheetTestUtils } from "aphrodite";
+
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
+
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
