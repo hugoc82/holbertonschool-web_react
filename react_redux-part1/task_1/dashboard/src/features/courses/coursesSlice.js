@@ -1,35 +1,44 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initialState = { items: [], status: 'idle', error: null };
+// État minimal attendu par le test
+const initialState = { courses: [] };
 
+// Thunk: retourne **un array** (pas un objet { courses: [...] })
 export const fetchCourses = createAsyncThunk(
   'courses/fetchCourses',
   async () => {
     const res = await axios.get('http://localhost:5173/courses.json');
-    return res.data; // le test attend items = payload tel quel
+    const data = res.data;
+    return Array.isArray(data) ? data : (data?.courses ?? []);
   }
 );
 
 const coursesSlice = createSlice({
   name: 'courses',
   initialState,
-  reducers: {},
+  reducers: {
+    // utilitaire
+    setCourses(state, action) {
+      state.courses = Array.isArray(action.payload) ? action.payload : [];
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCourses.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
+      // pending/rejected: le test veut un état inchangé
+      .addCase(fetchCourses.pending, (state) => state)
+      .addCase(fetchCourses.rejected, (state) => state)
+      // fulfilled: courses = payload (array)
       .addCase(fetchCourses.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.items = action.payload;
+        state.courses = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(fetchCourses.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error?.message ?? 'Request failed';
+      // reset quand l'action auth/logout passe
+      .addCase('auth/logout', (state) => {
+        state.courses = [];
       });
   },
 });
 
+export const { setCourses } = coursesSlice.actions;
 export default coursesSlice.reducer;
+export { initialState };
