@@ -15,7 +15,7 @@ const ENDPOINTS = {
 export const fetchNotifications = createAsyncThunk(
   "notifications/fetchNotifications",
   async () => {
-    const response = await axios.get(ENDPOINTS.notifications);
+    const response = await axios.get('http://localhost:5173/notifications.json');
     const latestNotif = {
       id: 3,
       type: "urgent",
