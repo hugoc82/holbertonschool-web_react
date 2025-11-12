@@ -1,35 +1,33 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { logout } from "../auth/authSlice";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-const initialState = {
-  courses: [],
-};
-
-const API_BASE_URL = "http://localhost:5173";
-const ENDPOINTS = {
-  courses: `${API_BASE_URL}/courses.json`,
-};
+const initialState = { items: [], status: 'idle', error: null };
 
 export const fetchCourses = createAsyncThunk(
-  "courses/fetchCourses",
+  'courses/fetchCourses',
   async () => {
-    const response = await axios.get(ENDPOINTS.courses);
-    return response.data.courses;
+    const res = await axios.get('http://localhost:5173/courses.json');
+    return res.data; // le test attend items = payload tel quel
   }
 );
 
 const coursesSlice = createSlice({
-  name: "courses",
+  name: 'courses',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCourses.fulfilled, (state, action) => {
-        state.courses = action.payload;
+      .addCase(fetchCourses.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
       })
-      .addCase(logout, (state) => {
-        state.courses = initialState.courses;
+      .addCase(fetchCourses.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(fetchCourses.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error?.message ?? 'Request failed';
       });
   },
 });
