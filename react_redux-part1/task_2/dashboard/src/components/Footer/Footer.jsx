@@ -1,4 +1,4 @@
-import { getCurrentYear, getFooterCopy } from "../../utils/utils";
+import { getCurrentYear, getFooterCopy } from '/utils.js';
 import { StyleSheet, css } from "aphrodite";
 
 const styles = StyleSheet.create({

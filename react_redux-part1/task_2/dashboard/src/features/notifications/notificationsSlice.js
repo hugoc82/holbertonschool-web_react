@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { getLatestNotification } from "../../utils/utils";
+import { getLatestNotification } from '../../utils/utils.js';
 
 const initialState = {
   notifications: [],

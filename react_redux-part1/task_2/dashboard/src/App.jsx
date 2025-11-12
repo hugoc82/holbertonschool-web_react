@@ -6,7 +6,7 @@ import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
 import Login from './pages/Login/Login';
 import CourseList from './pages/CourseList/CourseList';
-import { getLatestNotification } from './utils/utils';
+import { getLatestNotification } from '/utils.js';
 import BodySectionWithMarginBottom from './components/BodySectionWithMarginBottom/BodySectionWithMarginBottom';
 import BodySection from './components/BodySection/BodySection';
 import { appReducer, initialState, APP_ACTIONS } from './appReducer';
