@@ -17,6 +17,7 @@
     "jest-mock-axios": "^4.9.0"
   },
   "dependencies": {
+    "aphrodite": "^2.4.0",
     "axios": "^1.13.1"
   }
 }
