@@ -1,35 +1,26 @@
-import { getCurrentYear, getFooterCopy } from "../../utils/utils";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
+import { getCurrentYear, getFooterCopy } from "../../utils/utils";
 
 const styles = StyleSheet.create({
   footer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderTop: "5px red solid",
-    gap: "10px",
-  },
-  p: {
-    fontFamily: "Roboto, sans-serif",
+    borderTop: "1px solid #e0e0e0",
+    padding: "10px",
+    textAlign: "center",
+    fontSize: "12px",
     fontStyle: "italic",
-    fontSize: "1.3rem",
-    padding: "0 3px",
-    margin: 0,
   },
 });
 
-export default function Footer({ user }) {
-  return user ? (
+export default function Footer() {
+  return (
     <div className={css(styles.footer)}>
-      <p className={css(styles.p)}>
+      <p>
         Copyright {getCurrentYear()} - {getFooterCopy(true)}
       </p>
-      {user.isLoggedIn && (
-        <span className={css(styles.p)}>
-          <a href="#">Contact us</a>
-        </span>
-      )}
+      <p>
+        <a href="#contact">Contact us</a>
+      </p>
     </div>
-  ) : null;
+  );
 }

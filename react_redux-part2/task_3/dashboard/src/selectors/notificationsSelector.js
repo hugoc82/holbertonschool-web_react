@@ -1,20 +1,24 @@
-// src/features/selectors/notificationSelector.js
-import { createSelector } from "reselect";
+import { createSelector } from "@reduxjs/toolkit";
 
-// On récupère le tableau des notifications dans le slice
-const notificationsState = (state) => state.notifications.notifications || [];
+export const getNotifications = (state) => state.notifications.notifications;
 
 /**
- * The memoized selector getFilteredNotifications returns
- * all the unread notification items, OR the ones with type urgent, OR default
+ * Memoized selector : filtre les notifs selon "all" | "urgent" | "default"
  */
 export const getFilteredNotifications = createSelector(
-  [notificationsState],
-  (notifications) =>
-    notifications.filter(
-      (notif) =>
-        notif.isRead === false ||
-        notif.type === "urgent" ||
-        notif.type === "default"
-    )
+  [getNotifications, (_, filter) => filter],
+  (notifications, filter) => {
+    if (!notifications) return [];
+
+    if (filter === "urgent") {
+      return notifications.filter((n) => n.type === "urgent");
+    }
+
+    if (filter === "default") {
+      return notifications.filter((n) => n.type === "default");
+    }
+
+    // "all"
+    return notifications;
+  }
 );
