@@ -1,7 +1,5 @@
 import notificationsSlice, {
   markNotificationAsRead,
-  showDrawer,
-  hideDrawer,
   fetchNotifications,
 } from "../notifications/notificationsSlice";
 
@@ -14,7 +12,6 @@ afterEach(() => {
 describe("notificationsSlice", () => {
   const initialState = {
     notifications: [],
-    displayDrawer: true,
   };
 
   test("should return the initial state", () => {
@@ -38,26 +35,6 @@ describe("notificationsSlice", () => {
     };
     expect(notificationsSlice(stateWithNotifications, action)).toEqual(
       expectedState
-    );
-  });
-
-  test("should handle showDrawer", () => {
-    const action = showDrawer();
-    const expectedState = {
-      ...initialState,
-      displayDrawer: true,
-    };
-    expect(notificationsSlice(initialState, action)).toEqual(expectedState);
-  });
-
-  test("should handle hideDrawer", () => {
-    const stateWithDrawerClosed = {
-      ...initialState,
-      displayDrawer: false,
-    };
-    const action = hideDrawer();
-    expect(notificationsSlice(initialState, action)).toEqual(
-      stateWithDrawerClosed
     );
   });
 
