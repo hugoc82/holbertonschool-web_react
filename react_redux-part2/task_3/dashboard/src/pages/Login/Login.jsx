@@ -67,7 +67,7 @@ function Login() {
     handleChangeEmail,
     handleChangePassword,
     handleLoginSubmit
-  } = useLogin((email, password) => dispatch(login({ email, password })));
+  } = useLogin({ onLogin: (email, password) => dispatch(login({ email, password })) });
 
   return (
     <form aria-label="form" onSubmit={handleLoginSubmit}>

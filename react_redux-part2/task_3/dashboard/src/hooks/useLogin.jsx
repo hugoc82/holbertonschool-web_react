@@ -1,6 +1,7 @@
+
 import { useState } from 'react';
 
-const useLogin = (onLogin) => {
+const useLogin = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [enableSubmit, setEnableSubmit] = useState(false);
