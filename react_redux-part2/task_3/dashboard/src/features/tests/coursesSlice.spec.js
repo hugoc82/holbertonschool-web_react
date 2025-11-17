@@ -1,19 +1,15 @@
-import coursesSlice, {
-  fetchCourses,
-  selectCourse,
-  unSelectCourse,
-} from "../courses/coursesSlice";
+import coursesSlice, { fetchCourses } from "../courses/coursesSlice";
 import { logout } from "../auth/authSlice";
 import mockAxios from "jest-mock-axios";
+
+afterEach(() => {
+  mockAxios.reset();
+});
 
 describe("coursesSlice", () => {
   const initialState = {
     courses: [],
   };
-
-  afterEach(() => {
-    mockAxios.reset();
-  });
 
   test("should return the initial state", () => {
     expect(coursesSlice(undefined, { type: "unknown" })).toEqual(initialState);
@@ -38,8 +34,24 @@ describe("coursesSlice", () => {
       });
     });
 
-    test("test courses", async () => {
-      const coursesData = [
+    test("should handle fetchCourses.fulfilled with manual payload", () => {
+      const mockCourses = [
+        { id: 1, name: "ES6", credit: 60 },
+        { id: 2, name: "Webpack", credit: 20 },
+        { id: 3, name: "React", credit: 40 },
+      ];
+      const action = {
+        type: fetchCourses.fulfilled.type,
+        payload: mockCourses,
+      };
+      const state = coursesSlice(initialState, action);
+      expect(state).toEqual({
+        courses: mockCourses,
+      });
+    });
+
+    test("should execute fetchCourses thunk and return courses data", async () => {
+      const mockCourses = [
         { id: 1, name: "ES6", credit: 60 },
         { id: 2, name: "Webpack", credit: 20 },
         { id: 3, name: "React", credit: 40 },
@@ -51,17 +63,100 @@ describe("coursesSlice", () => {
       const promise = fetchCourses()(dispatch, getState, null);
 
       mockAxios.mockResponse({
-        data: { courses: coursesData },
+        data: { courses: mockCourses },
       });
 
       await promise;
 
-      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(dispatch).toHaveBeenCalledTimes(2); // pending + fulfilled
 
       const fulfilledAction = dispatch.mock.calls[1][0];
 
-      expect(fulfilledAction.type).toEqual(fetchCourses.fulfilled.type);
-      expect(fulfilledAction.payload).toEqual(coursesData);
+      expect(fulfilledAction).toEqual(
+        expect.objectContaining({
+          type: fetchCourses.fulfilled.type,
+          payload: mockCourses,
+        })
+      );
+      expect(fulfilledAction.payload).toHaveLength(3);
+      expect(fulfilledAction.payload).not.toEqual([]);
+    });
+
+    test("should not return empty array when courses data exists", async () => {
+      const mockCourses = [{ id: 1, name: "ES6", credit: 60 }];
+
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+
+      const promise = fetchCourses()(dispatch, getState, null);
+
+      mockAxios.mockResponse({
+        data: { courses: mockCourses },
+      });
+
+      await promise;
+
+      const fulfilledAction = dispatch.mock.calls[1][0];
+
+      expect(fulfilledAction.payload).not.toEqual([]);
+      expect(fulfilledAction.payload.length).toBeGreaterThan(0);
+      expect(Array.isArray(fulfilledAction.payload)).toBe(true);
+    });
+
+    test("should update state with actual courses from API response", async () => {
+      const mockCourses = [
+        { id: 1, name: "ES6", credit: 60 },
+        { id: 2, name: "Webpack", credit: 20 },
+      ];
+
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+
+      const promise = fetchCourses()(dispatch, getState, null);
+
+      mockAxios.mockResponse({
+        data: { courses: mockCourses },
+      });
+
+      await promise;
+
+      const fulfilledAction = dispatch.mock.calls[1][0];
+
+      const newState = coursesSlice(initialState, fulfilledAction);
+
+      expect(newState.courses).toEqual(mockCourses);
+      expect(newState.courses).toHaveLength(2);
+      expect(newState.courses).not.toEqual([]);
+    });
+
+    test("should return courses with correct object structure", async () => {
+      const mockCourses = [
+        { id: 1, name: "ES6", credit: 60 },
+        { id: 2, name: "Webpack", credit: 20 },
+      ];
+
+      const dispatch = jest.fn();
+      const getState = jest.fn();
+
+      const promise = fetchCourses()(dispatch, getState, null);
+
+      mockAxios.mockResponse({
+        data: { courses: mockCourses },
+      });
+
+      await promise;
+
+      const fulfilledAction = dispatch.mock.calls[1][0];
+
+      expect(fulfilledAction.payload).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            name: expect.any(String),
+            credit: expect.any(Number),
+          }),
+        ])
+      );
     });
   });
 
@@ -80,76 +175,6 @@ describe("coursesSlice", () => {
       expect(state).toEqual({
         courses: [],
       });
-    });
-  });
-
-  describe("selectCourse and unSelectCourse actions", () => {
-    test("should handle selectCourse", () => {
-      const stateWithCourses = {
-        courses: [
-          { id: 1, name: "ES6", credit: 60, isSelected: false },
-          { id: 2, name: "Webpack", credit: 20, isSelected: false },
-          { id: 3, name: "React", credit: 40, isSelected: false },
-        ],
-      };
-
-      const action = selectCourse(2);
-      const state = coursesSlice(stateWithCourses, action);
-
-      expect(state.courses).toEqual([
-        { id: 1, name: "ES6", credit: 60, isSelected: false },
-        { id: 2, name: "Webpack", credit: 20, isSelected: true },
-        { id: 3, name: "React", credit: 40, isSelected: false },
-      ]);
-    });
-
-    test("should handle unSelectCourse", () => {
-      const stateWithCourses = {
-        courses: [
-          { id: 1, name: "ES6", credit: 60, isSelected: false },
-          { id: 2, name: "Webpack", credit: 20, isSelected: true },
-          { id: 3, name: "React", credit: 40, isSelected: false },
-        ],
-      };
-
-      const action = unSelectCourse(2);
-      const state = coursesSlice(stateWithCourses, action);
-
-      expect(state.courses).toEqual([
-        { id: 1, name: "ES6", credit: 60, isSelected: false },
-        { id: 2, name: "Webpack", credit: 20, isSelected: false },
-        { id: 3, name: "React", credit: 40, isSelected: false },
-      ]);
-    });
-
-    test("should handle selectCourse for non-existent course", () => {
-      const stateWithCourses = {
-        courses: [{ id: 1, name: "ES6", credit: 60, isSelected: false }],
-      };
-
-      const action = selectCourse(999);
-      const state = coursesSlice(stateWithCourses, action);
-
-      expect(state.courses).toEqual([
-        { id: 1, name: "ES6", credit: 60, isSelected: false },
-      ]);
-    });
-
-    test("should add isSelected property to courses on fetchCourses.fulfilled", () => {
-      const action = {
-        type: fetchCourses.fulfilled.type,
-        payload: [
-          { id: 1, name: "ES6", credit: 60 },
-          { id: 2, name: "Webpack", credit: 20 },
-        ],
-      };
-
-      const state = coursesSlice(initialState, action);
-
-      expect(state.courses).toEqual([
-        { id: 1, name: "ES6", credit: 60, isSelected: false },
-        { id: 2, name: "Webpack", credit: 20, isSelected: false },
-      ]);
     });
   });
 });

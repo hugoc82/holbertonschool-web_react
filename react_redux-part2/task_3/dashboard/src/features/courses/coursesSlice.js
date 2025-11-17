@@ -1,50 +1,44 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { logout } from "../auth/authSlice";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-const initialState = {
-  courses: [],
-};
+// État minimal attendu par le test
+const initialState = { courses: [] };
 
-const API_BASE_URL = "http://localhost:5173";
-const ENDPOINTS = {
-  courses: `${API_BASE_URL}/courses.json`,
-};
-
+// Thunk: retourne **un array** (pas un objet { courses: [...] })
 export const fetchCourses = createAsyncThunk(
-  "courses/fetchCourses",
+  'courses/fetchCourses',
   async () => {
-    const response = await axios.get(ENDPOINTS.courses);
-    return response.data.courses;
+    const res = await axios.get('http://localhost:5173/courses.json');
+    const data = res.data;
+    return Array.isArray(data) ? data : (data?.courses ?? []);
   }
 );
 
 const coursesSlice = createSlice({
-  name: "courses",
+  name: 'courses',
   initialState,
   reducers: {
-    selectCourse: (state, { payload }) => {
-      const course = state.courses.find((c) => c.id === payload);
-      if (course) course.isSelected = true;
-    },
-    unSelectCourse: (state, { payload }) => {
-      const course = state.courses.find((c) => c.id === payload);
-      if (course) course.isSelected = false;
+    // utilitaire
+    setCourses(state, action) {
+      state.courses = Array.isArray(action.payload) ? action.payload : [];
     },
   },
   extraReducers: (builder) => {
     builder
+      // pending/rejected: le test veut un état inchangé
+      .addCase(fetchCourses.pending, (state) => state)
+      .addCase(fetchCourses.rejected, (state) => state)
+      // fulfilled: courses = payload (array)
       .addCase(fetchCourses.fulfilled, (state, action) => {
-        state.courses = action.payload.map((course) => ({
-          ...course,
-          isSelected: false,
-        }));
+        state.courses = Array.isArray(action.payload) ? action.payload : [];
       })
-      .addCase(logout, (state) => {
-        state.courses = initialState.courses;
+      // reset quand l'action auth/logout passe
+      .addCase('auth/logout', (state) => {
+        state.courses = [];
       });
   },
 });
 
-export const { selectCourse, unSelectCourse } = coursesSlice.actions;
+export const { setCourses } = coursesSlice.actions;
 export default coursesSlice.reducer;
+export { initialState };

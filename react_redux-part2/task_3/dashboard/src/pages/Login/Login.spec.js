@@ -1,25 +1,9 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 import userEvent from "@testing-library/user-event";
 import Login from "./Login";
-import authReducer from "../../features/auth/authSlice";
-
-const createMockStore = () => {
-  return configureStore({
-    reducer: {
-      auth: authReducer,
-    },
-  });
-};
-
-const renderWithRedux = (component) => {
-  const store = createMockStore();
-  return render(<Provider store={store}>{component}</Provider>);
-};
 
 test("testing signin form elements", () => {
-  const { container } = renderWithRedux(<Login />);
+  const { container } = render(<Login />);
 
   const inputElements = container.querySelectorAll(
     'input[type="email"], input[type="text"], input[type="password"]'
@@ -36,7 +20,7 @@ test("testing signin form elements", () => {
 });
 
 test("it should check that the email input element will be focused whenever the associated label is clicked", async () => {
-  renderWithRedux(<Login />);
+  render(<Login />);
 
   const emailInput = screen.getByLabelText("Email");
   const emailLabel = screen.getByText("Email");
@@ -49,7 +33,7 @@ test("it should check that the email input element will be focused whenever the 
 });
 
 test("it should check that the password input element will be focused whenver the associated label is clicked", async () => {
-  renderWithRedux(<Login />);
+  render(<Login />);
 
   const passwordLabel = screen.getByText("Password");
   const passwordInput = screen.getByLabelText("Password");
@@ -62,14 +46,14 @@ test("it should check that the password input element will be focused whenver th
 });
 
 test("submit button is disabled by default", () => {
-  renderWithRedux(<Login />);
+  render(<Login isLoggedIn={false} />);
   const submitButton = screen.getByText("OK");
 
   expect(submitButton).toBeDisabled();
 });
 
 test("submit button is enabled only with a valid email and password of at least 8 characters", () => {
-  renderWithRedux(<Login />);
+  render(<Login isLoggedIn={false} />);
 
   const emailInput = screen.getByLabelText("Email");
   const passwordInput = screen.getByLabelText("Password");
@@ -91,14 +75,8 @@ test("submit button is enabled only with a valid email and password of at least 
 });
 
 test("should call logIn function on form submission", () => {
-  const store = createMockStore();
-  const dispatchSpy = jest.spyOn(store, "dispatch");
-
-  render(
-    <Provider store={store}>
-      <Login />
-    </Provider>
-  );
+  const mockLogin = jest.fn();
+  render(<Login logIn={mockLogin} />);
 
   const emailInput = screen.getByLabelText(/email/i);
   const passwordInput = screen.getByLabelText(/password/i);
@@ -106,13 +84,8 @@ test("should call logIn function on form submission", () => {
   fireEvent.change(emailInput, { target: { value: "test@test.com" } });
   fireEvent.change(passwordInput, { target: { value: "password123" } });
 
-  const form = screen.getByRole("form");
-  fireEvent.submit(form);
+  const submitButton = screen.getByRole("button", { name: /ok/i });
+  fireEvent.click(submitButton);
 
-  expect(dispatchSpy).toHaveBeenCalledWith(
-    expect.objectContaining({
-      type: "auth/login",
-      payload: { email: "test@test.com", password: "password123" },
-    })
-  );
+  expect(mockLogin).toHaveBeenCalledWith("test@test.com", "password123");
 });

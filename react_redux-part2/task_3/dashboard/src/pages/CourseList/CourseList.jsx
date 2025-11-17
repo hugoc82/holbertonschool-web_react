@@ -1,8 +1,6 @@
-import CourseListRow from './CourseListRow/CourseListRow';
-import { useDispatch, useSelector } from 'react-redux';
-import WithLogging from '../../components/HOC/WithLogging';
-import { selectCourse, unSelectCourse } from '../../features/courses/coursesSlice';
 import { StyleSheet, css } from 'aphrodite';
+import CourseListRow from './CourseListRow/CourseListRow';
+import WithLogging from '../../components/HOC/WithLogging';
 
 const styles = StyleSheet.create({
   courses: {
@@ -26,45 +24,50 @@ const styles = StyleSheet.create({
   }
 });
 
-function CourseList() {
-  const { courses } = useSelector((state) => state.courses);
-  const dispatch = useDispatch();
-
-  const onChangeRow = (id, checked) => {
-    const action = checked ? selectCourse : unSelectCourse;
-    dispatch(action(id));
-  };
-
+function CourseList({ courses = [] }) {
   return (
     <div className={css(styles.courses)}>
-      {courses.length > 0 ? (
-        <table id="CourseList" className={css(styles.table)}>
-          <thead>
-            <CourseListRow textFirstCell="Available courses" isHeader={true} />
-            <CourseListRow textFirstCell="Course name" textSecondCell="Credit" isHeader={true} />
-          </thead>
-          <tbody>
-            {courses.map((course) => (
+      {
+        courses.length > 0 ? 
+        (
+          <table id='CourseList' className={css(styles.table)}>
+            <thead>
               <CourseListRow 
-                key={course.id}
-                id={course.id}
-                textFirstCell={course.name} 
-                textSecondCell={course.credit}
-                onChangeRow={onChangeRow}
-                isSelected={course.isSelected || false}
+                textFirstCell="Available courses" 
+                isHeader={true} 
               />
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <table id="CourseList" className={css(styles.table)}>
-          <thead>
-            <CourseListRow isHeader={true} textFirstCell="No course available yet" />
-          </thead>
-        </table>
-      )}
+              <CourseListRow 
+                textFirstCell="Course name" 
+                textSecondCell="Credit" 
+                isHeader={true} 
+              />
+            </thead>
+            <tbody>
+              {
+                courses.map(course => (
+                  <CourseListRow 
+                    key={course.id} 
+                    textFirstCell={course.name} 
+                    textSecondCell={course.credit} 
+                  />
+                ))
+              }
+            </tbody>
+          </table>
+        ) : (
+          <table id='CourseList' className={css(styles.table)}>
+            <thead>
+              <CourseListRow 
+                isHeader={true} 
+                textFirstCell="No course available yet" 
+              />
+            </thead>
+          </table>
+        )
+      }
     </div>
   );
 }
 
-export default WithLogging(CourseList);
+const CourseListWithLogging = WithLogging(CourseList);
+export default CourseListWithLogging
