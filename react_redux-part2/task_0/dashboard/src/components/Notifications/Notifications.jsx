@@ -117,7 +117,11 @@ const Notifications = memo(function Notifications () {
       <div className={css(styles.menuItem)} onClick={handleToggleDrawer}>
         Your notifications
       </div>
-      <div className={`${css(styles.notificationItems)} visible`} ref={DrawerRef} >
+      <div
+  className={css(styles.notificationItems)}
+  ref={DrawerRef}
+>
+
         {notifications.length > 0 ? (
           <>
             <p className={css(styles.p)}>Here is the list of notifications</p>
