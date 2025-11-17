@@ -45,7 +45,6 @@ describe("App Component Integration Tests", () => {
     await waitFor(() => {
       expect(store.getState().courses.courses).toHaveLength(0);
       expect(store.getState().notifications).toEqual({
-        displayDrawer: true,
         notifications: [
           { id: 1, type: "default", value: "New course available" },
           { id: 2, type: "urgent", value: "New resume available" },
