@@ -3,7 +3,6 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import Footer from "./Footer";
 import authReducer from "../../features/auth/authSlice";
-import { getCurrentYear, getFooterCopy } from "../../utils/utils";
 
 const createMockStore = (initialState) => {
   return configureStore({
