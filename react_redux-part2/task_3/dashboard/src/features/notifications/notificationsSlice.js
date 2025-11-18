@@ -1,43 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const initialState = {
+const initialState = {
   notifications: [],
-  displayDrawer: true,
+  loading: false,
 };
 
-/**
- * Thunk : récupère les notifs et renvoie seulement les non lues
- * en normalisant les champs (id, type, isRead, value).
- * Gère les deux formats possibles : direct (isRead, type, value)
- * ou imbriqué dans "context".
- */
+const API_BASE_URL = "http://localhost:5173";
+const ENDPOINTS = {
+  notifications: `${API_BASE_URL}/notifications.json`,
+};
+
 export const fetchNotifications = createAsyncThunk(
   "notifications/fetchNotifications",
   async () => {
-    const response = await axios.get("/notifications.json");
-    const { notifications = [] } = response.data || {};
+    const response = await axios.get(ENDPOINTS.notifications);
 
-    const unreadNotifications = notifications
-      .filter((n) => {
-        const isRead = n.isRead ?? (n.context ? n.context.isRead : undefined);
-
-        // Si explicitement true → on filtre
-        if (isRead === true) return false;
-        // false ou undefined → on considère comme non lu
-        return true;
-      })
-      .map((n) => {
-        const context = n.context || {};
-        return {
-          id: n.id,
-          type: n.type ?? context.type ?? "default",
-          isRead: n.isRead ?? context.isRead ?? false,
-          value: n.value ?? context.value ?? "",
-        };
-      });
-
-    return unreadNotifications;
+    return response.data
+      .filter((notification) => notification.context.isRead === false)
+      .map((notification) => ({
+        id: notification.id,
+        type: notification.context.type,
+        isRead: notification.context.isRead,
+        value: notification.context.value,
+      }));
   }
 );
 
@@ -46,27 +32,28 @@ const notificationsSlice = createSlice({
   initialState,
   reducers: {
     markNotificationAsRead: (state, action) => {
+      const notificationId = action.payload;
       state.notifications = state.notifications.filter(
-        (n) => n.id !== action.payload
+        (notification) => notification.id !== notificationId
       );
-      console.log(`Notification ${action.payload} has been marked as read`);
-    },
-    showDrawer: (state) => {
-      state.displayDrawer = true;
-    },
-    hideDrawer: (state) => {
-      state.displayDrawer = false;
+      console.log(`Notification ${notificationId} has been marked as read`);
     },
   },
+
   extraReducers: (builder) => {
-    builder.addCase(fetchNotifications.fulfilled, (state, action) => {
-      state.notifications = action.payload;
-    });
-    // ⚠️ on ne touche PAS au state pour pending / rejected
+    builder
+      .addCase(fetchNotifications.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchNotifications.fulfilled, (state, action) => {
+        state.notifications = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchNotifications.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 
-export const { markNotificationAsRead, showDrawer, hideDrawer } =
-  notificationsSlice.actions;
-
+export const { markNotificationAsRead } = notificationsSlice.actions;
 export default notificationsSlice.reducer;
